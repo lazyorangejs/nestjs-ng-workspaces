@@ -33,7 +33,6 @@
     "@nestjs/platform-express": "^7.0.0",
     "@nestjs/sequelize": "^0.2.0",
     "@nestjs/typeorm": "^7.1.5",
-    "@nx-tools/nx-docker": "^1.0.0-beta.2",
     "@types/sequelize": "^4.28.9",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
@@ -51,6 +50,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@nx-tools/nx-docker": "^1.0.0-beta.2",
     "@nestjs/cli": "^7.6.0",
     "@nestjs/schematics": "^7.0.0",
     "@nestjs/testing": "^7.0.0",
