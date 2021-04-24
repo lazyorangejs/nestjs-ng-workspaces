@@ -1,0 +1,27 @@
+{
+    "configurations": [
+        {
+            "name": "Attach to main app",
+            "port": 56833,
+            "address": "localhost",
+            "autoAttachChildProcesses": true,
+            "pauseForSourceMap": true,
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            ],
+            "request": "attach",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "pwa-node"
+        },
+        {
+            "name": "Attach to Chrome",
+            "request": "attach",
+            "port": 57059,
+            "type": "pwa-chrome",
+            "webRoot": "${workspaceFolder}"
+        }
+    ]
+}

@@ -1,0 +1,24 @@
+@baseApiUrl=http://localhost:3000
+
+POST {{baseApiUrl}}/signup
+Content-Type: application/json
+
+{
+  "email": "mark123@gmail.com",
+  "password": "password1!",
+  "username": "mark"
+}
+
+###
+
+POST {{baseApiUrl}}/signup
+Content-Type: application/json
+
+{
+  "email": "mark@gmail.com",
+  "password": "notvalid"
+}
+
+###
+
+GET {{baseApiUrl}}/users/6dd08f4d-1eed-43ea-a798-5092d0249e5c

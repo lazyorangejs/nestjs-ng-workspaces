@@ -1,0 +1,23 @@
+@baseApiUrl=http://localhost:3000
+
+POST {{baseApiUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "mark@gmail.com",
+  "password": "password1!"
+}
+
+###
+
+POST {{baseApiUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "mark@gmail.com",
+  "password": "notvalid"
+}
+
+
+###
+

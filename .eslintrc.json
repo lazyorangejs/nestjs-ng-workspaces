@@ -1,0 +1,63 @@
+{
+  "root": true,
+  "ignorePatterns": ["**/*"],
+  "plugins": [
+    "@nrwl/nx",
+    "import"
+  ],
+  "settings": {
+    "import/internal-regex": "^@lazyorange/"
+  },
+  "extends": [
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript"
+  ],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {
+        "@nrwl/nx/enforce-module-boundaries": [
+          "error",
+          {
+            "enforceBuildableLibDependency": true,
+            "allow": [],
+            "depConstraints": [
+              {
+                "sourceTag": "*",
+                "onlyDependOnLibsWithTags": ["*"]
+              }
+            ]
+          }
+        ],
+        "space-in-parens": ["error", "always"],
+        "no-console": "error",
+        "no-unreachable": "error",
+        "no-empty": "error",
+        "no-process-env": "error",
+        "space-before-function-paren": 2,
+        "prefer-const": "error",
+        "camelcase": "error",
+        "no-duplicate-imports": "error",
+        "consistent-return": "error",
+        "import/no-default-export": "error",
+        "import/no-named-default": "error",
+        "import/no-extraneous-dependencies": "error",
+        "no-useless-rename": "error",
+        "no-unused-vars": ["error", { "argsIgnorePattern": "^_", "caughtErrors": "all" }],
+        "typescript-eslint/no-unused-vars": "off",
+        "import/no-unresolved": "off"
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "extends": ["plugin:@nrwl/nx/typescript"],
+      "rules": {}
+    },
+    {
+      "files": ["*.js", "*.jsx"],
+      "extends": ["plugin:@nrwl/nx/javascript"],
+      "rules": {}
+    }
+  ]
+}

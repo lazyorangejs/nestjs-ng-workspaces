@@ -1,0 +1,20 @@
+version: "3.6"
+
+services:
+  redis:
+    image: redis:5
+    ports:
+    - 6379/tcp
+    restart: on-failure:5
+
+  app:
+    image: lazyorange/api:stable
+    restart: on-failure:5
+    build:
+      context: .
+      target: production
+    environment:
+      NODE_ENV: ${APP_ENV:-development}
+      FOO: bar
+    ports:
+      - 3000:3000/tcp

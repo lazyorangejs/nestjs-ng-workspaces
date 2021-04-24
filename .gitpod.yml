@@ -1,0 +1,19 @@
+image:
+  file: .gitpod.Dockerfile
+
+# List the ports you want to expose and what to do when they are served. See https://www.gitpod.io/docs/config-ports/
+ports:
+  - port: 3000
+    onOpen: open-preview
+    visibility: private
+
+# List the start up tasks. You can start them in parallel in multiple terminals. See https://www.gitpod.io/docs/config-start-tasks/
+tasks:
+  - before: cp .env.example .env
+    init: npm i # runs during prebuild
+    command: npm run dev
+
+vscode:
+  extensions:
+  - pflannery.vscode-versionlens
+  - vymarkov.nodejs-devops-extension-pack

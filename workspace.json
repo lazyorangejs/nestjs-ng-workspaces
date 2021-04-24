@@ -1,0 +1,157 @@
+{
+  "version": 2,
+  "cli": { "defaultCollection": "@nrwl/nest" },
+  "defaultProject": "app",
+  "projects": {
+    "app": {
+      "root": "apps/app",
+      "sourceRoot": "apps/app/src",
+      "projectType": "application",
+      "targets": {
+        "docker": {
+          "builder": "@nx-tools/nx-docker:build",
+          "options": {
+            "repository": "lazyorange/api",
+            "tags": [ "lazyorange/api:latest", "lazyorange/api:stable" ],
+            "socket": "/var/run/docker.sock"
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/app",
+            "main": "apps/app/src/main.ts",
+            "tsConfig": "apps/app/tsconfig.app.json",
+            "assets": ["apps/app/src/assets", "apps/app/src/.env.example"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/app/src/environments/environment.ts",
+                  "with": "apps/app/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:execute",
+          "options": { "buildTarget": "app:build" }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": { "lintFilePatterns": ["apps/app/**/*.ts"] }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/app"],
+          "options": {
+            "jestConfig": "apps/app/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "domain": {
+      "root": "libs/domain",
+      "sourceRoot": "libs/domain/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": { "lintFilePatterns": ["libs/domain/**/*.ts"] }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/domain"],
+          "options": {
+            "jestConfig": "libs/domain/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "users-typeorm": {
+      "root": "libs/users-typeorm",
+      "sourceRoot": "libs/users-typeorm/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": { "lintFilePatterns": ["libs/users-typeorm/**/*.ts"] }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/users-typeorm"],
+          "options": {
+            "jestConfig": "libs/users-typeorm/jest.config.js",
+            "codeCoverage": true,
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "infrastructure": {
+      "root": "libs/infrastructure",
+      "sourceRoot": "libs/infrastructure/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": { "lintFilePatterns": ["libs/infrastructure/**/*.ts"] }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/infrastructure"],
+          "options": {
+            "jestConfig": "libs/infrastructure/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "auth": {
+      "root": "libs/auth",
+      "sourceRoot": "libs/auth/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": { "lintFilePatterns": ["libs/auth/**/*.ts"] }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/auth"],
+          "options": {
+            "jestConfig": "libs/auth/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "users-sequelize": {
+      "root": "libs/users-sequelize",
+      "sourceRoot": "libs/users-sequelize/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": { "lintFilePatterns": ["libs/users-sequelize/**/*.ts"] }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/users-sequelize"],
+          "options": {
+            "jestConfig": "libs/users-sequelize/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  }
+}
