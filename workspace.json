@@ -13,7 +13,7 @@
           "options": {
             "repository": "lazyorange/api",
             "tags": [
-              "docker.pkg.github.com/lazyorangejs/nestjs-ng-workspaces/api:latest"
+              "ghcr.io/lazyorangejs/nx-nestjs-api:latest"
              ],
             "socket": "/var/run/docker.sock"
           }
