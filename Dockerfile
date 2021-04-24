@@ -11,7 +11,7 @@ RUN npm ci
 
 COPY . $WORKDIR/
 
-RUN npm run build
+RUN npm run build -- --production
 
 FROM node:fermium-alpine as production
 
@@ -24,8 +24,12 @@ ENV                                     WORKDIR /usr/src/app
 
 WORKDIR                                 $WORKDIR
 
-COPY .npmrc package.json                $WORKDIR/
-COPY --from=build $WORKDIR/dist         $WORKDIR/dist
+COPY .npmrc package.json package-lock.json    $WORKDIR/
+
+COPY --from=build $WORKDIR/dist               $WORKDIR/dist
+COPY package-lock.json                        $WORKDIR/dist/apps/app
+
+RUN npm ci --prefix=./dist/apps/app --production
 
 EXPOSE                                  $PORT
 

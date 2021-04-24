@@ -1,5 +1,6 @@
 // https://emojipedia.org/rocket/
 import './envrionments/environment'
+import 'sqlite3' // it's hack, in order to add this module package.json during build
 
 import { ShutdownSignal, ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
