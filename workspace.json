@@ -1,6 +1,8 @@
 {
   "version": 2,
-  "cli": { "defaultCollection": "@nrwl/nest" },
+  "cli": {
+    "defaultCollection": "@nrwl/nest"
+  },
   "defaultProject": "app",
   "projects": {
     "app": {
@@ -9,25 +11,30 @@
       "projectType": "application",
       "targets": {
         "docker": {
-          "builder": "@nx-tools/nx-docker:build",
+          "executor": "@nx-tools/nx-docker:build",
           "options": {
             "repository": "lazyorange/api",
             "tags": [
               "ghcr.io/lazyorangejs/nx-nestjs-api:latest"
-             ],
+            ],
             "socket": "/var/run/docker.sock"
           }
         },
         "build": {
           "executor": "@nrwl/node:build",
-          "outputs": ["{options.outputPath}"],
+          "outputs": [
+            "{options.outputPath}"
+          ],
           "options": {
             "generatePackageJson": true,
             "outputPath": "dist/apps/app",
             "main": "apps/app/src/main.ts",
             "externalDependencies": "all",
             "tsConfig": "apps/app/tsconfig.app.json",
-            "assets": ["apps/app/src/assets", "apps/app/src/.env.example"]
+            "assets": [
+              "apps/app/src/assets",
+              "apps/app/src/.env.example"
+            ]
           },
           "configurations": {
             "production": {
@@ -47,15 +54,23 @@
         },
         "serve": {
           "executor": "@nrwl/node:execute",
-          "options": { "buildTarget": "app:build" }
+          "options": {
+            "buildTarget": "app:build"
+          }
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["apps/app/**/*.ts"] }
+          "options": {
+            "lintFilePatterns": [
+              "apps/app/**/*.ts"
+            ]
+          }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/app"],
+          "outputs": [
+            "coverage/apps/app"
+          ],
           "options": {
             "jestConfig": "apps/app/jest.config.js",
             "passWithNoTests": true
@@ -70,11 +85,17 @@
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["libs/domain/**/*.ts"] }
+          "options": {
+            "lintFilePatterns": [
+              "libs/domain/**/*.ts"
+            ]
+          }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/domain"],
+          "outputs": [
+            "coverage/libs/domain"
+          ],
           "options": {
             "jestConfig": "libs/domain/jest.config.js",
             "passWithNoTests": true
@@ -89,11 +110,17 @@
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["libs/users-typeorm/**/*.ts"] }
+          "options": {
+            "lintFilePatterns": [
+              "libs/users-typeorm/**/*.ts"
+            ]
+          }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/users-typeorm"],
+          "outputs": [
+            "coverage/libs/users-typeorm"
+          ],
           "options": {
             "jestConfig": "libs/users-typeorm/jest.config.js",
             "codeCoverage": true,
@@ -109,11 +136,17 @@
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["libs/infrastructure/**/*.ts"] }
+          "options": {
+            "lintFilePatterns": [
+              "libs/infrastructure/**/*.ts"
+            ]
+          }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/infrastructure"],
+          "outputs": [
+            "coverage/libs/infrastructure"
+          ],
           "options": {
             "jestConfig": "libs/infrastructure/jest.config.js",
             "passWithNoTests": true
@@ -128,11 +161,17 @@
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["libs/auth/**/*.ts"] }
+          "options": {
+            "lintFilePatterns": [
+              "libs/auth/**/*.ts"
+            ]
+          }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/auth"],
+          "outputs": [
+            "coverage/libs/auth"
+          ],
           "options": {
             "jestConfig": "libs/auth/jest.config.js",
             "passWithNoTests": true
@@ -147,14 +186,89 @@
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["libs/users-sequelize/**/*.ts"] }
+          "options": {
+            "lintFilePatterns": [
+              "libs/users-sequelize/**/*.ts"
+            ]
+          }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/users-sequelize"],
+          "outputs": [
+            "coverage/libs/users-sequelize"
+          ],
           "options": {
             "jestConfig": "libs/users-sequelize/jest.config.js",
             "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "superhero-api": {
+      "root": "apps/superhero-api",
+      "sourceRoot": "apps/superhero-api/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:build",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "generatePackageJson": true,
+            "outputPath": "dist/apps/superhero-api",
+            "main": "apps/superhero-api/src/main.ts",
+            "tsConfig": "apps/superhero-api/tsconfig.app.json",
+            "assets": [
+              "apps/superhero-api/src/assets"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/superhero-api/src/environments/environment.ts",
+                  "with": "apps/superhero-api/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "superhero-api:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/superhero-api/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/apps/superhero-api"
+          ],
+          "options": {
+            "jestConfig": "apps/superhero-api/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "deploy": {
+          "executor": "@nrwl/workspace:run-commands",
+              "options": {
+              "commands": [
+                  {
+                      "command": "echo world"
+                  }
+              ]
           }
         }
       }

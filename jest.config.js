@@ -6,5 +6,6 @@ module.exports = {
     '<rootDir>/libs/infrastructure',
     '<rootDir>/libs/auth',
     '<rootDir>/libs/users-sequelize',
+    '<rootDir>/apps/superhero-api',
   ],
 }

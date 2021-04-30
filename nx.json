@@ -7,7 +7,7 @@
     ".eslintrc.json": "*",
     "nx.json": "*"
   },
-  "affected": { "defaultBase": "master" },
+  "affected": { "defaultBase": "main" },
   "npmScope": "lazyorange",
   "tasksRunnerOptions": {
     "default": {
@@ -21,6 +21,7 @@
     "users-typeorm": { "tags": [] },
     "infrastructure": { "tags": [] },
     "auth": { "tags": [] },
-    "users-sequelize": { "tags": [] }
+    "users-sequelize": { "tags": [] },
+    "superhero-api": { "tags": [] }
   }
 }

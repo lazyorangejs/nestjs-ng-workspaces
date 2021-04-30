@@ -31,6 +31,11 @@ export class AppController implements OnApplicationShutdown {
   ) {}
 
   @Get()
+  home(): string {
+    return this.appService.getHello()
+  }
+
+  @Get('/hello')
   getHello(): string {
     return this.appService.getHello()
   }
