@@ -48,7 +48,7 @@ jobs:
       - name: Deploy affected apps
         env:
           NODE_ENV: dev
-        uses: mansagroup/nrwl-nx-action@v2
+        uses: MansaGroup/nrwl-nx-action@v2.1.0
         with:
           targets: deploy
           affected: 'true'
