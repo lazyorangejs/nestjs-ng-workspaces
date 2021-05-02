@@ -264,9 +264,9 @@
         "deploy": {
           "executor": "@nrwl/workspace:run-commands",
               "options": {
-              "commands": [
+                "commands": [
                   {
-                      "command": "echo world"
+                      "command": "copilot svc deploy --name superhero-api --env $NODE_ENV"
                   }
               ]
           }

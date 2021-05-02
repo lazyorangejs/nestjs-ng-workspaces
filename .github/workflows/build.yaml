@@ -1,9 +1,10 @@
 name: Build
 # This workflow is triggered on pushes to the repository.
-on: [push]
+on: push
 
 jobs:
   build:
+    # if: ${{ github.ref == 'refs/heads/feat-deploy-by-aws-copilot' }}
     name: Docker build
     runs-on: ubuntu-latest
     steps:
@@ -30,5 +31,22 @@ jobs:
       - name: Build apps
         run: npm run nx affected:build
 
-      - name: 'Build docker images'
-        run: npm run nx affected -- --target=docker --push --all
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+      - name: Setup AWS Copilot
+        uses: softprops/setup-aws-copilot@v1
+        with:
+          version: v1.6.0
+
+      - name: Deploy affected apps
+        env:
+          NODE_ENV: dev
+        run: npx nx affected --target=deploy --all
+
+      # - name: 'Build docker images'
+      #   run: npm run nx affected -- --target=docker --push --all
