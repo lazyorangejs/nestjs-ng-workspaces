@@ -1,6 +1,6 @@
 FROM node:fermium-alpine
 
-ENV                                     APP_ENV=production
+ENV                                     APP_ENV=production NODE_ENV=production
 ENV                                     PORT=3000
 ENV                                     WORKDIR /usr/src/app
 
