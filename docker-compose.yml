@@ -8,7 +8,6 @@ services:
     restart: on-failure:5
 
   superhero-api:
-    image: 912888207281.dkr.ecr.eu-central-1.amazonaws.com/api/superhero-api:57b951d
     build:
       context: .
       dockerfile: apps/superhero-api/Dockerfile
@@ -16,10 +15,10 @@ services:
         app_name: superhero-api
 
   app:
-    image: lazyorange/api:stable
     restart: on-failure:5
     build:
       context: .
+      dockerfile: apps/app/Dockerfile
     environment:
       NODE_ENV: ${APP_ENV:-development}
       FOO: bar

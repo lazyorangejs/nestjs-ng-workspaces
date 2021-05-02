@@ -1,6 +1,6 @@
 FROM gitpod/workspace-full
 
-ENV NODE_ENV=dev
+ENV NODE_ENV=dev PORT=3000
 
 RUN brew install awscli
 

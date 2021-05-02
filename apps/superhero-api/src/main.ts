@@ -10,7 +10,7 @@ import { AppModule } from './app/app.module'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
-  const globalPrefix = '/api/superhero'
+  const globalPrefix = 'api/superhero'
   app.setGlobalPrefix(globalPrefix)
   // eslint-disable-next-line no-process-env
   const port = process.env.PORT || 3333
