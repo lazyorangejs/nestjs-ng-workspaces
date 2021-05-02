@@ -9,11 +9,11 @@ ports:
 
 # List the start up tasks. You can start them in parallel in multiple terminals. See https://www.gitpod.io/docs/config-start-tasks/
 tasks:
-  - before: cp .env.example .env
-    init: npm i # runs during prebuild
+  - init: cp apps/app/src/.env.example apps/app/.env && npm i # runs during prebuild
     command: npm run dev
 
 vscode:
   extensions:
   - pflannery.vscode-versionlens
   - vymarkov.nodejs-devops-extension-pack
+  - tabnine.tabnine-vscode
