@@ -2,6 +2,9 @@ name: Build
 # This workflow is triggered on pushes to the repository.
 on: push
 
+env:
+  BEFORE_SHA: ${{ github.event.before }}
+
 jobs:
   build:
     # if: ${{ github.ref == 'refs/heads/feat-deploy-by-aws-copilot' }}
@@ -45,14 +48,18 @@ jobs:
         with:
           version: v1.6.0
 
+      - name: Fetch git history
+        run: git fetch origin ${{ github.ref }}
+
       - name: Deploy affected apps
         env:
           NODE_ENV: dev
-        uses: MansaGroup/nrwl-nx-action@v2.1.0
-        with:
-          targets: deploy
-          affected: 'true'
-        # run: npx nx affected --target=deploy --base=${{ github.ref }}
+        run: npx nx affected --target=deploy --base=$BEFORE_SHA
+
+      # uses: MansaGroup/nrwl-nx-action@v2.1.0
+      # with:
+      #   targets: deploy
+      #   affected: 'true'
 
       # - name: 'Build docker images'
       #   run: npm run nx affected -- --target=docker --push --all
