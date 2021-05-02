@@ -27,5 +27,8 @@ jobs:
       - name: 'Install Dependencies'
         run: npm ci
 
-      - name: 'nx build'
+      - name: Build apps
+        run: npm run nx affected:build
+
+      - name: 'Build docker images'
         run: npm run nx affected -- --target=docker --push --all
