@@ -10,4 +10,9 @@ export class AppController {
   getData() {
     return this.appService.getData()
   }
+
+  @Get('/whoami')
+  whoAmI() {
+    return 'I am a superhero api!'
+  }
 }
