@@ -56,7 +56,7 @@ jobs:
       - name: Deploy affected apps
         env:
           NODE_ENV: dev
-        run: npx nx affected --target=deploy
+        run: npx nx affected --target=deploy --base=origin/main
 
       # uses: MansaGroup/nrwl-nx-action@v2.1.0
       # with:
