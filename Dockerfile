@@ -15,7 +15,7 @@ RUN npm run build -- --production
 
 FROM node:fermium-alpine as production
 
-ENV                                     APP_ENV=production
+ENV                                     APP_ENV=production NODE_ENV=production
 ENV                                     PORT=3000
 ENV                                     WORKDIR /usr/src/app
 
@@ -29,8 +29,10 @@ COPY .npmrc package.json package-lock.json    $WORKDIR/
 COPY --from=build $WORKDIR/dist               $WORKDIR/dist
 COPY package-lock.json                        $WORKDIR/dist/apps/app
 
-RUN npm ci --prefix=./dist/apps/app --production
+
+WORKDIR                                 $WORKDIR/dist/apps/app
+RUN npm ci --production
 
 EXPOSE                                  $PORT
 
-CMD ["node", "./dist/apps/app/main"]
+CMD ["node", "main.js"]
