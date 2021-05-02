@@ -10,11 +10,16 @@ ENV                                     WORKDIR /usr/src/app
 WORKDIR                                 $WORKDIR
 
 COPY .npmrc *.json                      $WORKDIR/
-COPY ./dist                             $WORKDIR
+COPY ./dist                             $WORKDIR/dist
+
+COPY package-lock.json                  ${WORKDIR}/dist/apps/app
+COPY package-lock.json                  ${WORKDIR}/dist/apps/superhero-api
 
 RUN npm ci --prefix=./dist/apps/app --production
 RUN npm ci --prefix=./dist/apps/superhero-api --production
 
+WORKDIR                                 $WORKDIR/dist/apps/app/
+
 EXPOSE                                  $PORT
 
-CMD ["node", "./dist/apps/app/main"]
+CMD ["node", "main"]

@@ -15,8 +15,10 @@ WORKDIR                                 $WORKDIR
 COPY .npmrc *.json                      $WORKDIR/
 COPY ./dist                             $WORKDIR
 
-WORKDIR                                 $WORKDIR/dist/apps/${app_name}
+ENV                                     WORKDIR=/usr/src/app/apps/superhero-api
+WORKDIR                                 $WORKDIR
 
+COPY package-lock.json                  ./
 RUN npm ci --production
 
 EXPOSE                                  $PORT

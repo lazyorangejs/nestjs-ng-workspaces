@@ -7,14 +7,22 @@ services:
     - 6379/tcp
     restart: on-failure:5
 
+  superhero-api:
+    image: 912888207281.dkr.ecr.eu-central-1.amazonaws.com/api/superhero-api:57b951d
+    build:
+      context: .
+      dockerfile: apps/superhero-api/Dockerfile
+      args:
+        app_name: superhero-api
+
   app:
     image: lazyorange/api:stable
     restart: on-failure:5
     build:
       context: .
-      target: production
     environment:
       NODE_ENV: ${APP_ENV:-development}
       FOO: bar
+    working_dir: /usr/src/app/dist/apps/superhero-api
     ports:
       - 3000:3000/tcp
