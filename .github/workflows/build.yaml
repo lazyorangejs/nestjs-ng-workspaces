@@ -29,7 +29,7 @@ jobs:
         run: npm ci
 
       - name: Build apps
-        run: npm run affected:build -- --base=${{ github.ref }}
+        run: npm run build:all
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -39,6 +39,8 @@ jobs:
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
       - name: Setup AWS Copilot
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
         uses: softprops/setup-aws-copilot@v1
         with:
           version: v1.6.0
