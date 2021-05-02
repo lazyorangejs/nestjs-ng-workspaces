@@ -48,7 +48,11 @@ jobs:
       - name: Deploy affected apps
         env:
           NODE_ENV: dev
-        run: npx nx affected --target=deploy --base=${{ github.ref }}
+        uses: mansagroup/nrwl-nx-action@v2
+        with:
+          targets: deploy
+          affected: 'true'
+        # run: npx nx affected --target=deploy --base=${{ github.ref }}
 
       # - name: 'Build docker images'
       #   run: npm run nx affected -- --target=docker --push --all
