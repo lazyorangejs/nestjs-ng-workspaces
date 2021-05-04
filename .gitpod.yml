@@ -17,3 +17,4 @@ vscode:
   - pflannery.vscode-versionlens
   - vymarkov.nodejs-devops-extension-pack
   - tabnine.tabnine-vscode
+  - https://github.com/nrwl/nx-console/releases/download/v17.2.0/nx-console.vsix
