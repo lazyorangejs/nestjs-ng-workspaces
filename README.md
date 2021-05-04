@@ -1,6 +1,6 @@
 # Lazyorange
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/lazyorangejs/nestjs-ng-workspaces/)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#/https://github.com/lazyorangejs/nestjs-ng-workspaces/)
 
 This project was generated using [Nx](https://nx.dev).
 
