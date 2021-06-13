@@ -8,11 +8,10 @@ services:
     restart: on-failure:5
 
   app:
-    image: lazyorange/api:stable
-    restart: on-failure:5
     build:
       context: .
-      target: production
+      dockerfile: apps/app/Dockerfile
+    restart: on-failure:5
     environment:
       NODE_ENV: ${APP_ENV:-development}
       FOO: bar

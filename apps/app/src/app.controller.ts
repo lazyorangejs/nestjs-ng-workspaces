@@ -35,6 +35,11 @@ export class AppController implements OnApplicationShutdown {
     return this.appService.getHello()
   }
 
+  @Get('/hello/:username')
+  sayHello(@Param('username') username: string): string {
+    return `Hello, ${username}`
+  }
+
   @Get('/users/:userId')
   getUserInfoById(@Param('userId') id: UserId): Promise<User> {
     return this.userService.findById(id)

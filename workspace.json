@@ -9,12 +9,10 @@
       "projectType": "application",
       "targets": {
         "docker": {
-          "builder": "@nx-tools/nx-docker:build",
+          "executor": "@nx-tools/nx-docker:build",
           "options": {
             "repository": "lazyorange/api",
-            "tags": [
-              "ghcr.io/lazyorangejs/nx-nestjs-api:latest"
-             ],
+            "tags": ["ghcr.io/lazyorangejs/nx-nestjs-api:latest"],
             "socket": "/var/run/docker.sock"
           }
         },
