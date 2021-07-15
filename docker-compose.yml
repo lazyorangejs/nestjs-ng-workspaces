@@ -11,6 +11,11 @@ services:
     build:
       context: .
       dockerfile: apps/app/Dockerfile
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
     restart: on-failure:5
     environment:
       NODE_ENV: ${APP_ENV:-development}
