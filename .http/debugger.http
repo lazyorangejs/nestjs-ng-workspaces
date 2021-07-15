@@ -1,0 +1,17 @@
+@baseApiUrl=http://localhost:3000
+
+GET {{baseApiUrl}}/debugger/memoryUsage
+Authorization: Basic vitaly_krivtsov:guke2Ed3pqJwL8pN2aWP
+
+###
+POST {{baseApiUrl}}/leakmemory
+
+###
+POST {{baseApiUrl}}/truncateLeakedArray
+
+###
+POST {{baseApiUrl}}/createHeapSnapshot
+
+###
+GET {{baseApiUrl}}/debugger/enable
+Authorization: Basic vitaly_krivtsov:guke2Ed3pqJwL8pN2aWP
