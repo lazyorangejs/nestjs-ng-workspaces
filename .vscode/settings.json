@@ -5,6 +5,7 @@
   },
   "conventionalCommits.scopes": [
     "auth",
-    "users"
+    "users",
+    "nx"
   ]
 }
