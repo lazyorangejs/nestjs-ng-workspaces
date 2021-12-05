@@ -18,29 +18,9 @@
     "default": {
       "runner": "@nrwl/workspace/tasks-runners/default",
       "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e"]
+        "cacheableOperations": ["build", "lint", "test", "e2e"],
+        "parallel": 1
       }
-    }
-  },
-  "projects": {
-    "app": {
-      "tags": ["scope:api"],
-      "implicitDependencies": ["domain"]
-    },
-    "auth": {
-      "tags": []
-    },
-    "domain": {
-      "tags": ["scope:domain"]
-    },
-    "infrastructure": {
-      "tags": []
-    },
-    "users-sequelize": {
-      "tags": []
-    },
-    "users-typeorm": {
-      "tags": []
     }
   },
   "targetDependencies": {
@@ -50,5 +30,9 @@
         "projects": "dependencies"
       }
     ]
-  }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/nest"
+  },
+  "defaultProject": "app"
 }

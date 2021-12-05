@@ -1,0 +1,65 @@
+{
+  "root": "apps/app",
+  "sourceRoot": "apps/app/src",
+  "projectType": "application",
+  "targets": {
+    "docker": {
+      "executor": "@nx-tools/nx-docker:build",
+      "options": {
+        "repository": "lazyorange/api",
+        "tags": ["ghcr.io/lazyorangejs/nx-nestjs-api:latest"],
+        "socket": "/var/run/docker.sock"
+      }
+    },
+    "build": {
+      "executor": "@nrwl/node:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "generatePackageJson": true,
+        "outputPath": "dist/apps/app",
+        "main": "apps/app/src/main.ts",
+        "externalDependencies": "all",
+        "tsConfig": "apps/app/tsconfig.app.json",
+        "assets": ["apps/app/src/assets", "apps/app/src/.env.example"]
+      },
+      "configurations": {
+        "production": {
+          "generatePackageJson": true,
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "externalDependencies": "all",
+          "fileReplacements": [
+            {
+              "replace": "apps/app/src/environments/environment.ts",
+              "with": "apps/app/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:execute",
+      "options": {
+        "buildTarget": "app:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/app/**/*.ts"]
+      },
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/app"],
+      "options": {
+        "jestConfig": "apps/app/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": ["scope:api"],
+  "implicitDependencies": ["domain"]
+}
