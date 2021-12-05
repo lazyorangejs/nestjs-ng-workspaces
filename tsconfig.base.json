@@ -15,11 +15,11 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@lazyorange/domain": ["libs/domain/src/index.ts"],
-      "@lazyorange/users-typeorm": ["libs/users-typeorm/src/index.ts"],
-      "@lazyorange/infrastructure": ["libs/infrastructure/src/index.ts"],
       "@lazyorange/auth": ["libs/auth/src/index.ts"],
-      "@lazyorange/users-sequelize": ["libs/users-sequelize/src/index.ts"]
+      "@lazyorange/domain": ["libs/domain/src/index.ts"],
+      "@lazyorange/infrastructure": ["libs/infrastructure/src/index.ts"],
+      "@lazyorange/users-sequelize": ["libs/users-sequelize/src/index.ts"],
+      "@lazyorange/users-typeorm": ["libs/users-typeorm/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,26 +1,54 @@
 {
   "implicitDependencies": {
     "workspace.json": "*",
-    "package.json": { "dependencies": "*", "devDependencies": "*" },
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
     "tsconfig.base.json": "*",
     "tslint.json": "*",
     ".eslintrc.json": "*",
     "nx.json": "*"
   },
-  "affected": { "defaultBase": "main" },
+  "affected": {
+    "defaultBase": "main"
+  },
   "npmScope": "lazyorange",
   "tasksRunnerOptions": {
     "default": {
       "runner": "@nrwl/workspace/tasks-runners/default",
-      "options": { "cacheableOperations": ["build", "lint", "test", "e2e"] }
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e"]
+      }
     }
   },
   "projects": {
-    "app": { "tags": ["scope:api"], "implicitDependencies": ["domain"] },
-    "domain": { "tags": ["scope:domain"] },
-    "users-typeorm": { "tags": [] },
-    "infrastructure": { "tags": [] },
-    "auth": { "tags": [] },
-    "users-sequelize": { "tags": [] }
+    "app": {
+      "tags": ["scope:api"],
+      "implicitDependencies": ["domain"]
+    },
+    "auth": {
+      "tags": []
+    },
+    "domain": {
+      "tags": ["scope:domain"]
+    },
+    "infrastructure": {
+      "tags": []
+    },
+    "users-sequelize": {
+      "tags": []
+    },
+    "users-typeorm": {
+      "tags": []
+    }
+  },
+  "targetDependencies": {
+    "build": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ]
   }
 }
