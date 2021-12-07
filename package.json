@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "dev": "npx nx run-many --parallel --target=serve --all",
     "nx": "nx",
     "start": "nx serve",
     "build": "nx build",
