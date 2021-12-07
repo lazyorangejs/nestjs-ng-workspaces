@@ -8,6 +8,6 @@
     "moduleResolution": "node",
     "module": "commonjs"
   },
-  "exclude": ["**/*.spec.ts"],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts"],
   "include": ["**/*.ts", "**/*.d.ts"]
 }

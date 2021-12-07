@@ -1,6 +1,6 @@
 // https://emojipedia.org/rocket/
 import './envrionments/environment'
-import 'sqlite3' // it's hack, in order to add this module package.json during build
+import 'sqlite3' // it's hack, in order to add this module to package.json during build
 
 import { ShutdownSignal, ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
@@ -11,7 +11,6 @@ import { config } from './config'
 async function bootstrap(port = 3000, level = 'debug') {
   const logger = pino({ level })
   const app = await NestFactory.create(AppModule)
-  app.useLogger(logger)
   app.enableCors()
   // Nest.js will validate all incoming requests by using validation rules inside DTO,
   // we don't allow to process unknown properties to avoid situation when client sends requests

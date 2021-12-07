@@ -23,5 +23,5 @@ vscode:
   - vymarkov.nodejs-devops-extension-pack
   - tabnine.tabnine-vscode
   - amazonwebservices.aws-toolkit-vscode
-  - https://github.com/nrwl/nx-console/releases/download/v17.2.0/nx-console.vsix
   - firsttris.vscode-jest-runner
+  - nrwl.angular-console

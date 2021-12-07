@@ -1,0 +1,24 @@
+{
+  "root": "libs/users-typeorm",
+  "sourceRoot": "libs/users-typeorm/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/users-typeorm/**/*.ts"]
+      },
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/users-typeorm"],
+      "options": {
+        "jestConfig": "libs/users-typeorm/jest.config.js",
+        "codeCoverage": true,
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

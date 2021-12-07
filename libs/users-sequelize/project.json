@@ -1,0 +1,23 @@
+{
+  "root": "libs/users-sequelize",
+  "sourceRoot": "libs/users-sequelize/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/users-sequelize/**/*.ts"]
+      },
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/users-sequelize"],
+      "options": {
+        "jestConfig": "libs/users-sequelize/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
