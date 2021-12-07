@@ -1,0 +1,34 @@
+{
+  "root": "libs/spotify-express-passport-auth-lib",
+  "sourceRoot": "libs/spotify-express-passport-auth-lib/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:package",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/spotify-express-passport-auth-lib",
+        "tsConfig": "libs/spotify-express-passport-auth-lib/tsconfig.lib.json",
+        "packageJson": "libs/spotify-express-passport-auth-lib/package.json",
+        "main": "libs/spotify-express-passport-auth-lib/src/index.ts",
+        "assets": ["libs/spotify-express-passport-auth-lib/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/spotify-express-passport-auth-lib/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/spotify-express-passport-auth-lib"],
+      "options": {
+        "jestConfig": "libs/spotify-express-passport-auth-lib/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

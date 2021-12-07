@@ -1,0 +1,8 @@
+{
+  "name": "@lazyorange/spotify-express-passport-auth",
+  "version": "0.0.1",
+  "devDependencies": {
+    "@types/express-session": "^1.17.4",
+    "@types/passport-spotify": "^2.0.1"
+  }
+}
