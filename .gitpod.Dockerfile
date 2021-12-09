@@ -20,3 +20,10 @@ RUN wget https://github.com/gruntwork-io/cloud-nuke/releases/download/${CLOUD_NU
 ### https://github.com/jckuester/awsls#installation
 RUN brew install jckuester/tap/awsls
 
+RUN npm i -g firebase-tools
+
+RUN curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-324.0.0-linux-x86_64.tar.gz &&\
+    tar -xvzf google-cloud-sdk-324.0.0-linux-x86_64.tar.gz &&\
+    cd ./google-cloud-sdk/ && ./install.sh -q --quiet && export PATH=/home/gitpod/google-cloud-sdk/bin:$PATH
+
+# ENV GOOGLE_APPLICATION_CREDENTIALS=./firebase-admin-key.json

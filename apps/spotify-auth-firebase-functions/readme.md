@@ -29,3 +29,50 @@ Nx-Firebase will add `firebase-admin` and `firebase-functions` to your workspace
 - You do not need to `npm install` in the app project directory, but can still add and run custom npm scripts to the app `package.json` if you wish
 
 See the plugin [README](https://github.com/simondotm/nx-firebase/blob/main/README.md) for more information.
+
+### Update Remote Config
+
+1. Init Firebase database:
+
+```bash
+firebase --config firebase.spotify-auth-firebase-functions.json init database
+```
+
+2. Copy the Client ID and Client Secret of your Spotify app and use them to set the spotify.client_id and spotify.client_secret Google Cloud environment variables. For this use:
+
+```bash
+firebase functions:config:set spotify.client_id="yourClientID" spotify.client_secret="yourClientSecret"
+```
+
+3. Set origin and basePath values:
+
+```bash
+firebase functions:config:set spotify.origin="pathToFirebaseFunctions" spotify.base_url="baseUrlRelativeToFirebaseFunctions"
+```
+
+4. 
+
+```bash
+gcloud functions add-iam-policy-binding helloWorld --member="allUsers" --role="roles/cloudfunctions.invoker"
+gcloud functions add-iam-policy-binding spotifyAuth --member="allUsers" --role="roles/cloudfunctions.invoker"
+ ```
+
+5. Get the function url and add callback url to Spotify application settings.
+
+```bash
+gcloud functions describe --format=json spotifyAuth | jq -r .httpsTrigger.url
+```
+
+Output:
+```bash
+https://us-central1-spotify-get-rid-of-shit.cloudfunctions.net/spotifyAuth
+# the full callback url should include /auth/spotify/callback path
+# https://us-central1-spotify-get-rid-of-shit.cloudfunctions.net/spotifyAuth/auth/spotify/callback
+```
+
+6. Update Remote Config with new origin value:
+
+```bash
+firebase functions:config:set spotify.origin=https://us-central1-spotify-get-rid-of-shit.cloudfunctions.net
+firebase functions:config:set spotify.base_url=/spotifyAuth
+```

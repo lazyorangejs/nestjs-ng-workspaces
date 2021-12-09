@@ -21,8 +21,7 @@
   },
   "functions": {
     "predeploy": [
-      "npx nx build spotify-auth-firebase-functions --with-deps",
-      "npx nx lint spotify-auth-firebase-functions"
+      "npx nx build spotify-auth-firebase-functions --with-deps"
     ],
     "source": "dist/apps/spotify-auth-firebase-functions"
   },

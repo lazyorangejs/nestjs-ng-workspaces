@@ -11,6 +11,17 @@
       "projectType": "application",
       "targets": {
         "build": {
+          "executor": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/spotify-auth-firebase-functions",
+            "main": "apps/spotify-auth-firebase-functions/src/index.ts",
+            "tsConfig": "apps/spotify-auth-firebase-functions/tsconfig.app.json",
+            "packageJson": "apps/spotify-auth-firebase-functions/package.json",
+            "generatePackageJson": true
+          }
+        },
+        "build-by-nx-firebase": {
           "executor": "@simondotm/nx-firebase:build",
           "outputs": ["{options.outputPath}"],
           "options": {

@@ -4,30 +4,21 @@ import * as passport from 'passport'
 import { Strategy as SpotifyStrategy } from 'passport-spotify'
 
 export const port = process.env.SPOTIFY_EXPRESS_PASSPORT_PORT || 3333
-const scope = (process.env.SPOTIFY_EXPRESS_SCOPES ?? '').split(',')
-const origin = process.env.ORIGIN
-
-const authCallbackPath = '/auth/spotify/callback'
-const callbackUrl = `${origin}${authCallbackPath}`
 
 export function createSpotifyAuthServer(
   clientID: string,
-  clientSecret: string
+  clientSecret: string,
+  scope: string[],
+  origin: string,
+  basePath = process.env.BASE_PATH ?? ''
 ) {
+  const authCallbackPath = '/auth/spotify/callback'
+
+  const callbackURL = new URL(origin)
+  callbackURL.pathname = `${basePath}${authCallbackPath}`
+
   passport.serializeUser((user, done) => done(null, user))
   passport.deserializeUser((obj, done) => done(null, obj))
-
-  // Simple route middleware to ensure user is authenticated.
-  //   Use this route middleware on any resource that needs to be protected.  If
-  //   the request is authenticated (typically via a persistent login session),
-  //   the request will proceed. Otherwise, the user will be redirected to the
-  //   login page.
-  function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-      return next()
-    }
-    res.redirect('/auth/spotify')
-  }
 
   // Use the SpotifyStrategy within Passport.
   //   Strategies in Passport require a `verify` function, which accept
@@ -39,7 +30,7 @@ export function createSpotifyAuthServer(
       {
         clientID,
         clientSecret,
-        callbackURL: callbackUrl,
+        callbackURL: callbackURL.toString(),
       },
       function (accessToken, refreshToken, expiresIn, profile, done) {
         // @ts-ignore
@@ -87,17 +78,13 @@ export function createSpotifyAuthServer(
   app.get(
     authCallbackPath,
     passport.authenticate('spotify', { failureRedirect: '/login' }),
-    (_, res) => res.redirect('/account')
+    (req, res) => res.json({ user: req.user })
   )
 
   app.get('/logout', (req, res) => {
     req.logout()
-    res.redirect('/api')
+    res.redirect(`${basePath}/api`)
   })
-
-  app.get('/account', ensureAuthenticated, (req, res) =>
-    res.json({ user: req.user })
-  )
 
   app.get('/api', (_, res) => {
     res.send({ message: 'Welcome to spotify-express-passport-auth-app!' })
