@@ -21,4 +21,5 @@ module.exports = {
       statements: 90,
     },
   },
+  reporters: ['jest-sonar-reporter'],
 }

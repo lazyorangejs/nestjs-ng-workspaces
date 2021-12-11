@@ -56,7 +56,8 @@
       "outputs": ["coverage/apps/app"],
       "options": {
         "jestConfig": "apps/app/jest.config.js",
-        "passWithNoTests": true
+        "passWithNoTests": true,
+        "codeCoverage": true
       }
     }
   },

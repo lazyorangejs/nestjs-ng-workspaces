@@ -10,4 +10,10 @@ module.exports = {
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/apps/app',
   testEnvironment: 'node',
+  testEnvironmentOptions: {
+    sonarReporter: {
+      reportFile: '../../coverage/apps/app/test-reporter.xml',
+      reportPath: 'test-reports',
+    },
+  },
 }
