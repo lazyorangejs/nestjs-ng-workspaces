@@ -20,3 +20,12 @@ RUN wget https://github.com/gruntwork-io/cloud-nuke/releases/download/${CLOUD_NU
 ### https://github.com/jckuester/awsls#installation
 RUN brew install jckuester/tap/awsls
 
+RUN sudo apt-get update && sudo apt-get install -y jq
+
+ENV SONAR_SCANNER_OPTS "-Xmx1024m"
+ENV SONAR_SCANNER_CLI_VERSION=4.4.0.2170
+
+RUN curl --insecure -OL https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_CLI_VERSION}-linux.zip &&\
+    unzip sonar-scanner-cli-${SONAR_SCANNER_CLI_VERSION}-linux.zip && ls
+
+ENV PATH=~/sonar-scanner-${SONAR_SCANNER_CLI_VERSION}-linux/bin:$PATH
