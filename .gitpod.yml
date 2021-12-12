@@ -15,7 +15,12 @@ tasks:
       cp apps/app/src/.env.example apps/app/.env
       npm install
 
-    command: node tools/configure-aws-profile.js && npm run dev
+      npm --version
+      node --version
+      npx firebase --version
+    before: npm install
+  - command: npx firebase --token=$FIREBASE_TOKEN projects:list
+  - command: npx nx run spotify-auth-firebase-functions:serve
 
 vscode:
   extensions:
