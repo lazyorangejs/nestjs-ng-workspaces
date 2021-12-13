@@ -38,6 +38,12 @@ See the plugin [README](https://github.com/simondotm/nx-firebase/blob/main/READM
 firebase --config firebase.spotify-auth-firebase-functions.json init database
 ```
 
+1.1. Enable required Google APIs:
+
+```bash
+gcloud services enable iamcredentials.googleapis.com
+```
+
 2. Copy the Client ID and Client Secret of your Spotify app and use them to set the spotify.client_id and spotify.client_secret Google Cloud environment variables. For this use:
 
 ```bash
@@ -47,7 +53,7 @@ firebase functions:config:set spotify.client_id="yourClientID" spotify.client_se
 3. Set origin and basePath values:
 
 ```bash
-firebase functions:config:set spotify.origin="pathToFirebaseFunctions" spotify.base_url="baseUrlRelativeToFirebaseFunctions"
+firebase functions:config:set spotify.redirect_uri="http://localhost:3000/spotifyCallback"
 ```
 
 4. 
@@ -73,6 +79,5 @@ https://us-central1-spotify-get-rid-of-shit.cloudfunctions.net/spotifyAuth
 6. Update Remote Config with new origin value:
 
 ```bash
-firebase functions:config:set spotify.origin=https://us-central1-spotify-get-rid-of-shit.cloudfunctions.net
-firebase functions:config:set spotify.base_url=/spotifyAuth
+firebase functions:config:set spotify.redirect_uri=https://us-central1-spotify-get-rid-of-shit.cloudfunctions.net/spotifyCallback
 ```

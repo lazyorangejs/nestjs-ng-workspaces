@@ -1,11 +1,15 @@
+import { Issuer, generators } from 'openid-client'
+import * as SpotifyWebApi from 'spotify-web-api-node'
+
+import { AuthorizationCode } from 'simple-oauth2'
+
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 import * as functions from 'firebase-functions'
 
 // The Firebase Admin SDK to access Firebase Features from within Cloud Functions.
 import * as admin from 'firebase-admin'
-admin.initializeApp()
-
-import { createSpotifyAuthServer } from '@lazyorange/spotify-express-passport-auth'
+const app = admin.initializeApp()
+const db = app.database()
 
 // Set up extra settings. Since May 29, 2020, Firebase Firebase Added support for
 // calling FirebaseFiresore.settings with { ignoreUndefinedProperties: true }.
@@ -25,43 +29,89 @@ export const helloWorld = functions.https.onRequest((request, response) => {
 
 const clientId = functions.config().spotify?.client_id
 const clientSecret = functions.config().spotify?.client_secret
-const origin =
-  functions.config().spotify?.origin ||
-  'https://5001-maroon-koala-nson26t9.ws-eu21.gitpod.io'
+const redirectUri = functions.config().spotify?.redirect_uri
 
-const baseUrl =
-  functions.config().spotify?.base_url ||
-  '/spotify-get-rid-of-shit/us-central1/spotifyAuth'
+// https://developer.spotify.com/documentation/general/guides/scopes/
+const scope = [
+  'playlist-read-private',
+  'user-read-email',
+  'playlist-modify-private',
+  'user-read-playback-state',
+].join(' ')
 
-const scope = (process.env.SPOTIFY_EXPRESS_SCOPES ?? '').split(',')
+const nonce = generators.nonce()
 
-const { app: spotifyAuthServer } = createSpotifyAuthServer(
-  clientId,
-  clientSecret,
-  scope,
-  origin,
-  baseUrl
-)
+// https://5001-red-cardinal-iu4p8lek.ws-eu23.gitpod.io/spotify-get-rid-of-shit/us-central1/spotifyAuth
+export const spotifyAuth = functions.https.onRequest(async (_, res) => {
+  functions.logger.info('Spotify Auth parameters', { scope, redirectUri })
 
-export const spotifyAuth = functions.https.onRequest(spotifyAuthServer)
+  const spotifyIssuer = await Issuer.discover('https://accounts.spotify.com')
+  const client = new spotifyIssuer.Client({
+    client_id: clientId,
+    client_secret: clientSecret,
+    redirect_uris: [redirectUri],
+    response_types: ['code'],
+  })
 
-// https://5001-maroon-koala-nson26t9.ws-eu21.gitpod.io/spotify-get-rid-of-shit/us-central1/spotifyAuth/auth/spotify
-
-process.on('auth:spotify:finished', async ({ accessToken, profile }) => {
-  const profilePic = profile?.user?.photos[0]?.value
-  const spotifyUserID = profile.user?.id
-  const userName = profile.user?.username
-  const email = profile.user?.email
-
-  const token = await createFirebaseAccount(
-    spotifyUserID,
-    userName,
-    profilePic,
-    email,
-    accessToken
+  const authorizationUrl = new URL(
+    client.authorizationUrl({
+      scope,
+      nonce,
+    })
   )
+  authorizationUrl.searchParams.set('scope', scope)
 
-  functions.logger.info('Successfully logged in!', { profile, token })
+  functions.logger.info({ authorizationUrl: authorizationUrl.toString() })
+
+  res.redirect(authorizationUrl.toString())
+})
+
+export const spotifyCallback = functions.https.onRequest(async (req, res) => {
+  const client = new AuthorizationCode({
+    client: { id: clientId, secret: clientSecret },
+    auth: {
+      tokenHost: 'https://accounts.spotify.com',
+      tokenPath: '/api/token',
+    },
+  })
+
+  try {
+    const accessToken = await client.getToken({
+      code: req.query.code,
+      redirect_uri: redirectUri,
+      scope,
+    })
+    functions.logger.log('received and validated tokens', {
+      accessToken,
+      token: accessToken.token,
+    })
+
+    const spotifyApiClient = new SpotifyWebApi()
+    spotifyApiClient.setAccessToken(accessToken.token.access_token)
+
+    type SpotifyProfile = {
+      display_name: string
+      email: string
+      id: string
+      images: { url: string }[]
+    }
+    const { body: userinfo }: { body: SpotifyProfile } =
+      await spotifyApiClient.getMe()
+
+    await createFirebaseAccount(
+      userinfo.id,
+      userinfo.display_name,
+      userinfo.images[0]?.url,
+      userinfo.email,
+      accessToken.token.access_token
+    )
+
+    res.json(userinfo)
+  } catch (error) {
+    functions.logger.error(error)
+    functions.logger.error('Access Token Error', { error })
+    res.json('fail')
+  }
 })
 
 /**
@@ -81,11 +131,11 @@ async function createFirebaseAccount(
   // The UID we'll assign to the user.
   const uid = `spotify:${spotifyID}`
 
-  // Save the access token to the Firebase Realtime Database.
-  const databaseTask = admin
-    .database()
-    .ref(`/spotifyAccessToken/${uid}`)
-    .set(accessToken)
+  const saveAccessTokenTask = db
+    .ref(`/accessTokens/${uid}`)
+    .set({ accessToken })
+
+  // await saveAccessTokenTask
 
   // Create or update the user account.
   const userCreationTask = admin
@@ -111,9 +161,12 @@ async function createFirebaseAccount(
     })
 
   // Wait for all async tasks to complete, then generate and return a custom auth token.
-  await Promise.all([userCreationTask, databaseTask])
+  await Promise.all([userCreationTask, saveAccessTokenTask])
   // Create a Firebase custom auth token.
-  const token = await admin.auth().createCustomToken(uid)
+  const token = await admin
+    .auth()
+    .createCustomToken(uid, { accessToken, scope })
+
   functions.logger.log('Created Custom token for UID "', uid, '" Token:', token)
   return token
 }

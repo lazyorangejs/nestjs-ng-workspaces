@@ -50,7 +50,7 @@
         "emulate": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
-            "command": "firebase emulators:start --config firebase.spotify-auth-firebase-functions.json"
+            "command": "firebase emulators:start --config firebase.spotify-auth-firebase-functions.json --only functions,database"
           }
         },
         "serve": {

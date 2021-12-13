@@ -24,6 +24,8 @@ RUN npm i -g firebase-tools
 
 RUN curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-324.0.0-linux-x86_64.tar.gz &&\
     tar -xvzf google-cloud-sdk-324.0.0-linux-x86_64.tar.gz &&\
-    cd ./google-cloud-sdk/ && ./install.sh -q --quiet && export PATH=/home/gitpod/google-cloud-sdk/bin:$PATH
+    cd ./google-cloud-sdk/ && ./install.sh -q --quiet
+
+ENV PATH=/home/gitpod/google-cloud-sdk/bin:$PATH
 
 # ENV GOOGLE_APPLICATION_CREDENTIALS=./firebase-admin-key.json
