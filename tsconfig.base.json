@@ -22,6 +22,9 @@
       "@lazyorange/spotify-express-passport-auth": [
         "libs/spotify-express-passport-auth-lib/src/index.ts"
       ],
+      "@lazyorange/spotify-simple-oauth2-auth-lib": [
+        "libs/spotify-simple-oauth2-auth-lib/src/index.ts"
+      ],
       "@lazyorange/users-sequelize": ["libs/users-sequelize/src/index.ts"],
       "@lazyorange/users-typeorm": ["libs/users-typeorm/src/index.ts"]
     }

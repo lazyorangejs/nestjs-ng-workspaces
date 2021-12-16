@@ -4,14 +4,18 @@ import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import SpotifyWebApi from 'spotify-web-api-node'
 import { AuthorizationCode } from 'simple-oauth2'
-import { db } from './global'
 
-// Start writing Firebase Functions
-// https://firebase.google.com/docs/functions/typescript
-export const helloWorld = functions.https.onRequest((request, response) => {
-  functions.logger.info('Hello logs!', { structuredData: true })
-  response.send('Hello from Firebase!')
+const app = admin.initializeApp(undefined, 'spotify-auth')
+
+// Set up extra settings. Since May 29, 2020, Firebase Firebase Added support for
+// calling FirebaseFiresore.settings with { ignoreUndefinedProperties: true }.
+// When this parameter is set, Cloud Firestore ignores undefined properties
+// inside objects rather than rejecting the API call.
+admin.firestore(app).settings({
+  ignoreUndefinedProperties: true,
 })
+
+const db = app.firestore()
 
 const clientId: string = functions.config().spotify?.client_id
 const clientSecret: string = functions.config().spotify?.client_secret
@@ -34,8 +38,6 @@ const client = new AuthorizationCode({
   },
 })
 
-// https://5001-red-cardinal-iu4p8lek.ws-eu23.gitpod.io/spotify-get-rid-of-shit/us-central1/spotifyAuth
-// http://localhost:5001/spotify-get-rid-of-shit/us-central1/spotifyAuth
 export const spotifyAuth = functions.https.onRequest(async (_, res) => {
   const authorizationUrl = client.authorizeURL({
     scope,
@@ -70,10 +72,10 @@ export const spotifyCallback = functions.https.onRequest(async (req, res) => {
 
     await createFirebaseAccount(
       userinfo.id,
-      userinfo.display_name,
-      userinfo.images[0]?.url,
       userinfo.email,
-      accessToken.token as TokenSet
+      accessToken.token as TokenSet,
+      userinfo.display_name,
+      userinfo.images?.shift()?.url
     )
 
     res.json(userinfo)
@@ -101,10 +103,10 @@ type TokenSet = {
  */
 async function createFirebaseAccount(
   spotifyID: string,
-  displayName: string,
-  photoURL: string,
   email: string,
-  tokenSet: TokenSet
+  tokenSet: TokenSet,
+  displayName?: string,
+  photoURL?: string
 ) {
   // The UID we'll assign to the user.
   const uid = `spotify:${spotifyID}`

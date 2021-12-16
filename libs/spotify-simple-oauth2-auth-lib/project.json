@@ -1,0 +1,34 @@
+{
+  "root": "libs/spotify-simple-oauth2-auth-lib",
+  "sourceRoot": "libs/spotify-simple-oauth2-auth-lib/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:package",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/spotify-simple-oauth2-auth-lib",
+        "tsConfig": "libs/spotify-simple-oauth2-auth-lib/tsconfig.lib.json",
+        "packageJson": "libs/spotify-simple-oauth2-auth-lib/package.json",
+        "main": "libs/spotify-simple-oauth2-auth-lib/src/index.ts",
+        "assets": ["libs/spotify-simple-oauth2-auth-lib/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/spotify-simple-oauth2-auth-lib/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/spotify-simple-oauth2-auth-lib"],
+      "options": {
+        "jestConfig": "libs/spotify-simple-oauth2-auth-lib/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

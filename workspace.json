@@ -8,6 +8,7 @@
     "spotify-auth-firebase-functions": "apps/spotify-auth-firebase-functions",
     "spotify-express-passport-auth-app": "apps/spotify-express-passport-auth-app",
     "spotify-express-passport-auth-lib": "libs/spotify-express-passport-auth-lib",
+    "spotify-simple-oauth2-auth-lib": "libs/spotify-simple-oauth2-auth-lib",
     "users-sequelize": "libs/users-sequelize",
     "users-typeorm": "libs/users-typeorm"
   }
