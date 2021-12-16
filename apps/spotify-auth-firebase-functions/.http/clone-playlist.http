@@ -1,0 +1,11 @@
+@baseUrl=http://localhost:5001/spotify-get-rid-of-shit/us-central1
+
+### Remove track from own playlist
+### https://open.spotify.com/playlist/0mHp4YGQafLceibtfhe1FB
+
+GET {{baseUrl}}/clonePlaylist?user_id=spotify:31el5t5b5t2ro3il6wor3kh5f5ai&playlist_id=0mHp4YGQafLceibtfhe1FB
+
+### Clone the original playlist due to lack of permissions to edit playlist tracks
+
+# https://open.spotify.com/playlist/37i9dQZF1DX5ECfKO3L7Vd
+GET {{baseUrl}}/clonePlaylist?user_id=spotify:31el5t5b5t2ro3il6wor3kh5f5ai&playlist_id=37i9dQZF1DX5ECfKO3L7Vd

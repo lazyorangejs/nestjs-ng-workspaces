@@ -1,7 +1,4 @@
 {
-  "database": {
-    "rules": "apps/spotify-auth-firebase-functions/database.rules.json"
-  },
   "firestore": {
     "rules": "apps/spotify-auth-firebase-functions/firestore.rules",
     "indexes": "apps/spotify-auth-firebase-functions/firestore.indexes.json"

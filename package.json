@@ -77,6 +77,8 @@
     "@types/jest": "27.0.2",
     "@types/node": "14.14.33",
     "@types/passport": "^1.0.7",
+    "@types/simple-oauth2": "^4.1.1",
+    "@types/spotify-web-api-node": "^5.0.4",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "5.3.1",
     "@typescript-eslint/parser": "5.3.1",
