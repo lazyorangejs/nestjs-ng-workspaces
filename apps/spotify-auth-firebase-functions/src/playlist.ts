@@ -82,7 +82,7 @@ const editPlaylist = async (
     if (tracksToAdd.length) {
       await client.addTracksToPlaylist(
         playlistID,
-        tracksToAdd.map((itm) => itm.track.id),
+        tracksToAdd.map((itm) => itm.track.uri),
         { position: 0 }
       )
     }
@@ -211,19 +211,16 @@ export const cloneOrEditPlaylistHttp = functions.https.onRequest(
           msg: 'Please connect your Spotify account',
         })
       } else {
-        const playlistID: string = req.query.playlist_id as string
+        const originalPlaylistID: string = req.query.playlist_id as string
         const playlist = await cloneOrEditPlaylist(
           authInfo.uid,
-          playlistID,
+          originalPlaylistID,
           blocklistPlaylistID
         )
 
-        let originalPlaylistId =
-          playlistID === playlist.id ? playlistID : playlist.id
-
         await savePlaylistContext({
+          originalPlaylistID,
           playlistID: playlist.id,
-          originalPlaylistID: originalPlaylistId,
           ownerID: authInfo.uid,
           blocklistID: blocklistPlaylistID,
         })
