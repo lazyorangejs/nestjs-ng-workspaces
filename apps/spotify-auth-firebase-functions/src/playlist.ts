@@ -1,7 +1,7 @@
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 import * as functions from 'firebase-functions'
 import SpotifyWebApi from 'spotify-web-api-node'
-import { db, tokenSetColl } from './global'
+import { authApp, db, tokenSetColl } from './global'
 
 type PlaylistID = string
 
@@ -58,28 +58,55 @@ const buildSpotifyClient = async (uid: string) => {
   return client
 }
 
-export const clonePlaylist = functions.https.onRequest(async (req, res) => {
-  const userId: string = req.query.user_id as string
-  const playlistID: string = req.query.playlist_id as string
-
-  // https://open.spotify.com/playlist/0M4buVSktMgWQd34QH1dTG
-  const blocklistPlaylistID = '0M4buVSktMgWQd34QH1dTG'
-
-  const doc = await db.collection('tokenSet').doc(userId).get()
-  if (doc.exists) {
-    const client = await buildSpotifyClient(userId)
-    const [{ body: blockplaylistTracks }, playlist] = await Promise.all([
-      client.getPlaylistTracks(blocklistPlaylistID, {
-        fields: 'items',
-      }),
-      upsertPlaylist(client, playlistID),
-    ])
-
-    const tracksToRemove = blockplaylistTracks.items.map((itm) => itm.track)
-    await client.removeTracksFromPlaylist(playlist.id, tracksToRemove)
-
-    res.json({ playlistID: playlist.id })
-  } else {
-    res.send('Hello from Firebase!')
+export const authenticateIdToken = async (
+  req: functions.https.Request,
+  res
+) => {
+  const token = req.get('Authorization')?.split(' ')?.pop()
+  try {
+    const decodedToken = await authApp.verifyIdToken(token, true)
+    return decodedToken
+  } catch (err) {
+    return null
   }
-})
+}
+
+export const cloneOrEditPlaylist = functions.https.onRequest(
+  async (req, res) => {
+    const authInfo = await authenticateIdToken(req, res)
+    functions.logger.debug('authInfo', authInfo)
+
+    // https://open.spotify.com/playlist/0M4buVSktMgWQd34QH1dTG
+    const blocklistPlaylistID = '0M4buVSktMgWQd34QH1dTG'
+
+    if (!authInfo) {
+      res.status(401).json({
+        status: 'not_authenticated',
+        msg: 'Please connect your Spotify account',
+      })
+    } else {
+      const userId: string = authInfo.uid
+      const playlistID: string = req.query.playlist_id as string
+      const doc = await db.collection('tokenSet').doc(userId).get()
+      if (!doc.exists) {
+        res.status(401).json({
+          status: 'not_authenticated',
+          msg: 'Please connect your Spotify account',
+        })
+      } else {
+        const client = await buildSpotifyClient(userId)
+        const [{ body: blockplaylistTracks }, playlist] = await Promise.all([
+          client.getPlaylistTracks(blocklistPlaylistID, {
+            fields: 'items',
+          }),
+          upsertPlaylist(client, playlistID),
+        ])
+
+        const tracksToRemove = blockplaylistTracks.items.map((itm) => itm.track)
+        await client.removeTracksFromPlaylist(playlist.id, tracksToRemove)
+
+        res.json({ status: 'ok', playlistID: playlist.id })
+      }
+    }
+  }
+)

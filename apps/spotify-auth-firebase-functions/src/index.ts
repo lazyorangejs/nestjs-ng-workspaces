@@ -1,5 +1,2 @@
-export { clonePlaylist } from './playlist'
-export {
-  spotifyAuth,
-  spotifyCallback,
-} from '@lazyorange/spotify-simple-oauth2-auth-lib'
+export * from './playlist'
+export * from '@lazyorange/spotify-simple-oauth2-auth-lib'

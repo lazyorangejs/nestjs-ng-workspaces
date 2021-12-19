@@ -30,19 +30,56 @@ Nx-Firebase will add `firebase-admin` and `firebase-functions` to your workspace
 
 See the plugin [README](https://github.com/simondotm/nx-firebase/blob/main/README.md) for more information.
 
-### Update Remote Config
-
-1. Init Firebase database:
-
+## Setup google cloud project and configure required APIs:
+ 1. Obtains access credentials for your user account.
 ```bash
-firebase --config firebase.spotify-auth-firebase-functions.json init database
+gcloud auth login --no-launch-browser
 ```
 
-1.1. Enable required Google APIs:
+Output:
+```bash
+You are now logged in as [vymarkov@gmail.com].
+Your current project is [None].  You can change this setting by running:
+  $ gcloud config set project PROJECT_ID
+
+
+Updates are available for some Cloud SDK components.  To install them,
+please run:
+  $ gcloud components update
+```
+
+ 1. Set the default project.
+```bash
+gcloud config set project you_project_name
+```
+ 1. Enable required Google APIs.
 
 ```bash
 gcloud services enable iamcredentials.googleapis.com
 ```
+
+## Create and setup your Spotify app:
+ 1. Create a Spotify app in the [Spotify Developers website](https://developer.spotify.com/my-applications/).
+ 1. Add the URL `https://5001-<gitpod-workspace-id>.gitpod.io/spotify-get-rid-of-shit/us-central1/spotifyCallback` to the
+    **Redirect URIs** of your Spotify app.
+ 1. Add the URL `http://localhost:5001/spotify-get-rid-of-shit/us-central1/spotifyCallback` to the
+    **Redirect URIs** of your Spotify app.
+ 1. Add the URL `https://us-central1-<your-gcp-project-id>.cloudfunctions.net/spotifyCallback` to the
+    **Redirect URIs** of your Spotify app.
+
+    1. Receive gcp project id:
+    ```bash
+    gcloud config get-value project
+    ```
+ 
+ 1. Copy the **Client ID** and **Client Secret** of your Spotify app and use them to set the `spotify.client_id` and `spotify.client_secret` Google Cloud environment variables. For this use:
+
+    ```bash
+    firebase functions:config:set spotify.client_id="yourClientID" spotify.client_secret="yourClientSecret"
+    ```
+
+ > Make sure the Spotify Client Secret is always kept secret. For instance do not save this in your version control system.
+
 
 2. Copy the Client ID and Client Secret of your Spotify app and use them to set the spotify.client_id and spotify.client_secret Google Cloud environment variables. For this use:
 

@@ -4,7 +4,7 @@
 // The Firebase Admin SDK to access Firebase Features from within Cloud Functions.
 import * as admin from 'firebase-admin'
 
-const app = admin.initializeApp(undefined, 'default')
+const app = admin.initializeApp()
 
 // Set up extra settings. Since May 29, 2020, Firebase Firebase Added support for
 // calling FirebaseFiresore.settings with { ignoreUndefinedProperties: true }.
@@ -15,5 +15,7 @@ admin.firestore(app).settings({
 })
 
 export const db = app.firestore()
+
+export const authApp = app.auth()
 
 export const tokenSetColl = db.collection('tokenSet')

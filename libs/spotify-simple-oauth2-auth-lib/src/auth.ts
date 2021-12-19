@@ -16,6 +16,7 @@ admin.firestore(app).settings({
 })
 
 const db = app.firestore()
+const authApp = app.auth()
 
 const clientId: string = functions.config().spotify?.client_id
 const clientSecret: string = functions.config().spotify?.client_secret
@@ -70,7 +71,7 @@ export const spotifyCallback = functions.https.onRequest(async (req, res) => {
 
     const { body: userinfo } = await spotifyApiClient.getMe()
 
-    await createFirebaseAccount(
+    const token = await createFirebaseAccount(
       userinfo.id,
       userinfo.email,
       accessToken.token as TokenSet,
@@ -78,7 +79,7 @@ export const spotifyCallback = functions.https.onRequest(async (req, res) => {
       userinfo.images?.shift()?.url
     )
 
-    res.json(userinfo)
+    res.json({ userinfo, token })
   } catch (error) {
     functions.logger.error(error)
     functions.logger.error('Access Token Error', { error })
@@ -114,8 +115,7 @@ async function createFirebaseAccount(
   const saveTokenSetTask = db.doc(`/tokenSet/${uid}`).set(tokenSet)
 
   // Create or update the user account.
-  const userCreationTask = admin
-    .auth()
+  const userCreationTask = authApp
     .updateUser(uid, {
       displayName,
       photoURL,
@@ -125,7 +125,7 @@ async function createFirebaseAccount(
     .catch((error) => {
       // If user does not exists we create it.
       if (error.code === 'auth/user-not-found') {
-        return admin.auth().createUser({
+        return authApp.createUser({
           uid: uid,
           displayName: displayName,
           photoURL: photoURL,
@@ -139,7 +139,7 @@ async function createFirebaseAccount(
   // Wait for all async tasks to complete, then generate and return a custom auth token.
   await Promise.all([userCreationTask, saveTokenSetTask])
   // Create a Firebase custom auth token.
-  const token = await admin.auth().createCustomToken(uid)
+  const token = await authApp.createCustomToken(uid)
 
   functions.logger.log('Created Custom token for UID "', uid, '" Token:', token)
   return token

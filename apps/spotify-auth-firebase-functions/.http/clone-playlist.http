@@ -1,11 +1,16 @@
 @baseUrl=http://localhost:5001/spotify-get-rid-of-shit/us-central1
+@token=eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJhdWQiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbS9nb29nbGUuaWRlbnRpdHkuaWRlbnRpdHl0b29sa2l0LnYxLklkZW50aXR5VG9vbGtpdCIsImlhdCI6MTYzOTkwNDc4OSwiZXhwIjoxNjM5OTA4Mzg5LCJpc3MiOiJmaXJlYmFzZS1hdXRoLWVtdWxhdG9yQGV4YW1wbGUuY29tIiwic3ViIjoiZmlyZWJhc2UtYXV0aC1lbXVsYXRvckBleGFtcGxlLmNvbSIsInVpZCI6InNwb3RpZnk6MzFlbDV0NWI1dDJybzNpbDZ3b3Iza2g1ZjVhaSJ9.
+
+GET http://localhost:5001/spotify-get-rid-of-shit/us-central1/spotifyAuth
 
 ### Remove track from own playlist
 ### https://open.spotify.com/playlist/0mHp4YGQafLceibtfhe1FB
 
-GET {{baseUrl}}/clonePlaylist?user_id=spotify:31el5t5b5t2ro3il6wor3kh5f5ai&playlist_id=0mHp4YGQafLceibtfhe1FB
+GET {{baseUrl}}/cloneOrEditPlaylist?playlist_id=0mHp4YGQafLceibtfhe1FB
+Authorization: Bearer {{token}}
 
 ### Clone the original playlist due to lack of permissions to edit playlist tracks
 
 # https://open.spotify.com/playlist/37i9dQZF1DX5ECfKO3L7Vd
-GET {{baseUrl}}/clonePlaylist?user_id=spotify:31el5t5b5t2ro3il6wor3kh5f5ai&playlist_id=37i9dQZF1DX5ECfKO3L7Vd
+GET {{baseUrl}}/cloneOrEditPlaylist?playlist_id=37i9dQZF1DX5ECfKO3L7Vd
+Authorization: Bearer {{token}}
