@@ -118,3 +118,14 @@ https://us-central1-spotify-get-rid-of-shit.cloudfunctions.net/spotifyAuth
 ```bash
 firebase functions:config:set spotify.redirect_uri=https://us-central1-spotify-get-rid-of-shit.cloudfunctions.net/spotifyCallback
 ```
+
+## Known issues
+
+1. Unable to use firebase token that was issued by firebase auth emulator
+
+```
+Firebase ID token has incorrect "aud" (audience) claim. Expected "spotify-get-rid-of-shit" but got "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit". Make sure the ID token comes from the same Firebase project as the service account used to authenticate this SDK. See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token.'
+```
+
+Related issue on Github:
+https://github.com/firebase/firebase-functions/issues/265

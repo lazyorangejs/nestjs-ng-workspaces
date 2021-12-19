@@ -26,6 +26,7 @@ RUN curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cl
     tar -xvzf google-cloud-sdk-324.0.0-linux-x86_64.tar.gz &&\
     cd ./google-cloud-sdk/ && ./install.sh -q --quiet
 
-ENV PATH=/home/gitpod/google-cloud-sdk/bin:$PATH
+ENV PATH=~/google-cloud-sdk/bin:$PATH
 
-# ENV GOOGLE_APPLICATION_CREDENTIALS=./firebase-admin-key.json
+# please take a closer look at this doc https://firebase.google.com/docs/admin/setup?authuser=0 on how to gen app credentials
+ENV GOOGLE_APPLICATION_CREDENTIALS=./apps/spotify-auth-firebase-functions/firebase-admin-key.json

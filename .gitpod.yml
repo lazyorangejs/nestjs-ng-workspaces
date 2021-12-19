@@ -33,9 +33,15 @@ tasks:
       node --version
       npx firebase --version
     before: npm install
+
   - name: Firebase Projects List
     command: npx firebase --token=$FIREBASE_TOKEN projects:list
-  - command: npx nx run spotify-auth-firebase-functions:serve
+
+  - name: nx run spotify-auth-firebase-functions:emulate
+    command: npx nx run spotify-auth-firebase-functions:emulate
+
+  - name: nx run spotify-auth-firebase-functions:build
+    command: nx run spotify-auth-firebase-functions:build --watch
 
 vscode:
   extensions:

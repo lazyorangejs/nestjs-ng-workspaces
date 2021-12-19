@@ -46,3 +46,4 @@ Thumbs.db
 **/*-debug.log
 .firebase
 *.log
+**/firebase-admin-key.json
