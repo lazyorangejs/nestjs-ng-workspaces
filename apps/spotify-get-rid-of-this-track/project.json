@@ -1,0 +1,52 @@
+{
+  "root": "apps/spotify-get-rid-of-this-track",
+  "sourceRoot": "apps/spotify-get-rid-of-this-track/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/spotify-get-rid-of-this-track",
+        "main": "apps/spotify-get-rid-of-this-track/src/main.ts",
+        "tsConfig": "apps/spotify-get-rid-of-this-track/tsconfig.app.json",
+        "assets": ["apps/spotify-get-rid-of-this-track/src/assets"]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/spotify-get-rid-of-this-track/src/environments/environment.ts",
+              "with": "apps/spotify-get-rid-of-this-track/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:execute",
+      "options": {
+        "buildTarget": "spotify-get-rid-of-this-track:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/spotify-get-rid-of-this-track/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/spotify-get-rid-of-this-track"],
+      "options": {
+        "jestConfig": "apps/spotify-get-rid-of-this-track/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

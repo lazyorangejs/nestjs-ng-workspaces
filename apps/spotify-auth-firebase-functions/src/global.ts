@@ -19,3 +19,4 @@ export const db = app.firestore()
 export const authApp = app.auth()
 
 export const tokenSetColl = db.collection('tokenSet')
+export const playlistColl = db.collection('playlist')

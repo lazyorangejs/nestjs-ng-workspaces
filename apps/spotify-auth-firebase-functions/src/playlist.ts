@@ -1,7 +1,7 @@
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 import * as functions from 'firebase-functions'
 import SpotifyWebApi from 'spotify-web-api-node'
-import { authApp, db, tokenSetColl } from './global'
+import { authApp, tokenSetColl, playlistColl } from './global'
 
 type PlaylistID = string
 
@@ -34,6 +34,59 @@ export const upsertPlaylist = async (
   )
 
   return playlist.body
+}
+
+const editPlaylist = async (
+  playlistID: string,
+  originalPlaylistID: string,
+  blocklistPlaylistID: string,
+  ownerId: string
+) => {
+  const client = await buildSpotifyClient(ownerId)
+  const [
+    { body: blockplaylistTracks },
+    { body: originalPlaylistTracks },
+    { body: playlistToEditTracks },
+  ] = await Promise.all([
+    client.getPlaylistTracks(blocklistPlaylistID, {
+      fields: 'items',
+    }),
+    client.getPlaylistTracks(originalPlaylistID, {
+      fields: 'items',
+    }),
+    client.getPlaylistTracks(playlistID, {
+      fields: 'items',
+    }),
+    ,
+  ])
+
+  const tracksToRemove = blockplaylistTracks.items.map((itm) => itm.track)
+  await client.removeTracksFromPlaylist(playlistID, tracksToRemove)
+
+  // add new tracks at the start of the playlist
+  {
+    tracksToRemove.forEach((track) => {
+      const idx = playlistToEditTracks.items.findIndex(
+        (t) => t.track.id === track.id
+      )
+      if (idx !== -1) {
+        playlistToEditTracks.items.splice(idx, 1)
+      }
+    })
+
+    const tracksToAdd = originalPlaylistTracks.items.filter(
+      (t) =>
+        !playlistToEditTracks.items.find((itm) => itm.track.id === t.track.id)
+    )
+
+    if (tracksToAdd.length) {
+      await client.addTracksToPlaylist(
+        playlistID,
+        tracksToAdd.map((itm) => itm.track.id),
+        { position: 0 }
+      )
+    }
+  }
 }
 
 const buildSpotifyClient = async (uid: string) => {
@@ -71,7 +124,73 @@ export const authenticateIdToken = async (
   }
 }
 
-export const cloneOrEditPlaylist = functions.https.onRequest(
+/**
+ * Clone an playlist by given playlist id or edit if user is beeing owner.
+ * All tracks will be removed
+ *
+ * @param {string} userId An owner of Spotify account on behalf to edit playlist
+ * @param {string} playlistID An ID of the playlist to edit if user is owner or clone the original playlist
+ * @param {string} blocklistPlaylistID An ID of the blocklist playlist which contains all artist which must be blocked, their tracks will be removed from playlist.
+ */
+const cloneOrEditPlaylist = async (
+  userId: string,
+  playlistID: string,
+  blocklistPlaylistID: string
+) => {
+  const client = await buildSpotifyClient(userId)
+
+  const playlist = await upsertPlaylist(client, playlistID)
+  await editPlaylist(playlist.id, playlistID, blocklistPlaylistID, userId)
+
+  return playlist
+}
+
+type PlaylistContext = {
+  playlistID: string
+  originalPlaylistID: string
+  ownerID: string
+  blocklistID: string
+}
+
+const savePlaylistContext = async ({
+  playlistID,
+  originalPlaylistID,
+  ownerID,
+  blocklistID,
+}: PlaylistContext) => {
+  await playlistColl
+    .doc(ownerID + ':' + playlistID)
+    .set(
+      { ownerID, playlistID, originalPlaylistID, blocklistID },
+      { merge: true }
+    )
+}
+
+export const editPlaylistsByCron = functions.pubsub
+  .schedule('5 * * * *')
+  .onRun(async () => {
+    const resp = await authApp.listUsers(100)
+    resp.users.forEach(async (user) => {
+      const resp = await playlistColl.where('ownerID', '==', user.uid).get()
+      if (resp.docs) {
+        await Promise.all(
+          resp.docs
+            .filter((doc) => doc.exists)
+            .map((doc) => doc.data() as PlaylistContext)
+            .map((doc) =>
+              editPlaylist(
+                doc.playlistID,
+                doc.originalPlaylistID,
+                doc.blocklistID,
+                doc.ownerID
+              )
+            )
+        )
+      }
+    })
+  })
+
+export const cloneOrEditPlaylistHttp = functions.https.onRequest(
   async (req, res) => {
     const authInfo = await authenticateIdToken(req, res)
     functions.logger.debug('authInfo', authInfo)
@@ -85,27 +204,30 @@ export const cloneOrEditPlaylist = functions.https.onRequest(
         msg: 'Please connect your Spotify account',
       })
     } else {
-      const userId: string = authInfo.uid
-      const playlistID: string = req.query.playlist_id as string
-      const doc = await db.collection('tokenSet').doc(userId).get()
+      const doc = await tokenSetColl.doc(authInfo.uid).get()
       if (!doc.exists) {
         res.status(401).json({
           status: 'not_authenticated',
           msg: 'Please connect your Spotify account',
         })
       } else {
-        const client = await buildSpotifyClient(userId)
-        const [{ body: blockplaylistTracks }, playlist] = await Promise.all([
-          client.getPlaylistTracks(blocklistPlaylistID, {
-            fields: 'items',
-          }),
-          upsertPlaylist(client, playlistID),
-        ])
+        const playlistID: string = req.query.playlist_id as string
+        const playlist = await cloneOrEditPlaylist(
+          authInfo.uid,
+          playlistID,
+          blocklistPlaylistID
+        )
 
-        const tracksToRemove = blockplaylistTracks.items.map((itm) => itm.track)
-        await client.removeTracksFromPlaylist(playlist.id, tracksToRemove)
+        let originalPlaylistId =
+          playlistID === playlist.id ? playlistID : playlist.id
 
-        res.json({ status: 'ok', playlistID: playlist.id })
+        await savePlaylistContext({
+          playlistID: playlist.id,
+          originalPlaylistID: originalPlaylistId,
+          ownerID: authInfo.uid,
+          blocklistID: blocklistPlaylistID,
+        })
+        res.json({ status: 'ok', playlist })
       }
     }
   }
