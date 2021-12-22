@@ -43,7 +43,7 @@
     "emulate": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "firebase emulators:start --config firebase.spotify-auth-firebase-functions.json --inspect-functions --only functions,firestore,database"
+        "command": "firebase emulators:start --config firebase.spotify-auth-firebase-functions.json --inspect-functions --only auth,functions,firestore,database"
       }
     },
     "serve": {
@@ -72,7 +72,8 @@
       "outputs": ["coverage/apps/spotify-auth-firebase-functions"],
       "options": {
         "jestConfig": "apps/spotify-auth-firebase-functions/jest.config.js",
-        "passWithNoTests": true
+        "passWithNoTests": true,
+        "testEnvironment": "node"
       }
     }
   },

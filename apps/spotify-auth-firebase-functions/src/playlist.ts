@@ -36,13 +36,13 @@ export const upsertPlaylist = async (
   return playlist.body
 }
 
-const editPlaylist = async (
+export const editPlaylist = async (
+  client,
   playlistID: string,
   originalPlaylistID: string,
   blocklistPlaylistID: string,
-  ownerId: string
+  _ownerId: string
 ) => {
-  const client = await buildSpotifyClient(ownerId)
   const [
     { body: blockplaylistTracks },
     { body: originalPlaylistTracks },
@@ -89,14 +89,15 @@ const editPlaylist = async (
   }
 }
 
-const buildSpotifyClient = async (uid: string) => {
+export const buildSpotifyClient = async (uid: string) => {
   const clientId = functions.config().spotify?.client_id
   const clientSecret = functions.config().spotify?.client_secret
   const redirectUri = functions.config().spotify?.redirect_uri
 
+  const doc = await tokenSetColl.doc(uid).get()
+
   const client = new SpotifyWebApi({ clientId, clientSecret, redirectUri })
 
-  const doc = await tokenSetColl.doc(uid).get()
   if (doc.exists) {
     client.setAccessToken(doc.get('access_token'))
     client.setRefreshToken(doc.get('refresh_token'))
@@ -140,7 +141,13 @@ const cloneOrEditPlaylist = async (
   const client = await buildSpotifyClient(userId)
 
   const playlist = await upsertPlaylist(client, playlistID)
-  await editPlaylist(playlist.id, playlistID, blocklistPlaylistID, userId)
+  await editPlaylist(
+    client,
+    playlist.id,
+    playlistID,
+    blocklistPlaylistID,
+    userId
+  )
 
   return playlist
 }
@@ -172,6 +179,7 @@ export const editPlaylistsByCron = functions.pubsub
     const resp = await authApp.listUsers(100)
     resp.users.forEach(async (user) => {
       const resp = await playlistColl.where('ownerID', '==', user.uid).get()
+      const client = await buildSpotifyClient(user.uid)
       if (resp.docs) {
         await Promise.all(
           resp.docs
@@ -179,6 +187,7 @@ export const editPlaylistsByCron = functions.pubsub
             .map((doc) => doc.data() as PlaylistContext)
             .map((doc) =>
               editPlaylist(
+                client,
                 doc.playlistID,
                 doc.originalPlaylistID,
                 doc.blocklistID,

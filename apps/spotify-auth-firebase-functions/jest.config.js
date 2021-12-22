@@ -11,4 +11,5 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/apps/spotify-auth-firebase-functions',
+  testEnvironment: 'node'
 }

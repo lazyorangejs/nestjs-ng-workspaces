@@ -1,7 +1,7 @@
-@baseUrl=http://localhost:5001/spotify-get-rid-of-shit/us-central1
-@token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk1NmMwNDEwZmE1MjFjMTZlNDQ2NWE4ZjVjODU5NjZhNWY1MDk5NGIiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVml0YWx5IE1hcmtvdiIsInBpY3R1cmUiOiJodHRwczovL2kuc2Nkbi5jby9pbWFnZS9hYjY3NzU3MDAwMDBlZTg1ZjNhOThkYjgwNmRjMjQ5OGI3NWJmMmMzIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Nwb3RpZnktZ2V0LXJpZC1vZi1zaGl0IiwiYXVkIjoic3BvdGlmeS1nZXQtcmlkLW9mLXNoaXQiLCJhdXRoX3RpbWUiOjE2Mzk5MjM5MTUsInVzZXJfaWQiOiJzcG90aWZ5OjMxZWw1dDViNXQycm8zaWw2d29yM2toNWY1YWkiLCJzdWIiOiJzcG90aWZ5OjMxZWw1dDViNXQycm8zaWw2d29yM2toNWY1YWkiLCJpYXQiOjE2Mzk5MjM5MTUsImV4cCI6MTYzOTkyNzUxNSwiZW1haWwiOiJwNDd1c3l1NmZ5QHByaXZhdGVyZWxheS5hcHBsZWlkLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInA0N3VzeXU2ZnlAcHJpdmF0ZXJlbGF5LmFwcGxlaWQuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiY3VzdG9tIn19.QiiMvpP8bZQTtAGFmTuhz0WI3wjT7pt2epVRPO7zWwK3sXU11VG7b0092xJK7_-8LKUzS5JyuRYCvSNZw4_EfFzesyHJ9SOVQgu-ThTnKyWBwKdLo7CJNpuKPx1o8TLtQ7hkpKH6mwJytFLFFIIaet3hVJ5YLOotlBDQLTW3cMiFAkv_ZhGBYdFdMg7eMPc-k64EOUbfM06T4d8ct_64SBQ307OTdLb-ejMhWC3E9d_ltBpP-SZ5V8tIGV5_OFjzSuhsKLHip1MzZXY3OCVaBmPpux-yEDAg4gpU89j0r3izJeN7DuwPB2AODOSApvzNilI-k5HIJFKhfgiMX8dkVg
+@baseUrl={{$dotenv BASE_URL }}
+@token={{$dotenv token}}
 
-GET http://localhost:5001/spotify-get-rid-of-shit/us-central1/spotifyAuth
+GET {{baseUrl}}/spotifyAuth
 
 ### Remove track from own playlist
 ### https://open.spotify.com/playlist/0mHp4YGQafLceibtfhe1FB
@@ -14,3 +14,7 @@ Authorization: Bearer {{token}}
 # https://open.spotify.com/playlist/37i9dQZF1DX5ECfKO3L7Vd
 GET {{baseUrl}}/cloneOrEditPlaylistHttp?playlist_id=37i9dQZF1DX5ECfKO3L7Vd
 Authorization: Bearer {{token}}
+
+###
+GET {{baseUrl}}/convertCustomTokenToIdToken
+Authorization: Bearer {{$dotenv customUserToken}}

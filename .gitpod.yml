@@ -13,6 +13,8 @@ ports:
     onOpen: ignore
   - port: 9000
     onOpen: ignore
+  - port: 9099
+    onOpen: ignore
   - port: 5000
     onOpen: ignore
   - port: 8085
@@ -32,10 +34,10 @@ tasks:
       npm --version
       node --version
       npx firebase --version
-    before: npm install
 
-  - name: Firebase Projects List
-    command: npx firebase --token=$FIREBASE_TOKEN projects:list
+      npx firebase --token=$FIREBASE_TOKEN projects:list
+
+    before: npm install
 
   - name: nx run spotify-auth-firebase-functions:emulate
     command: npx nx run spotify-auth-firebase-functions:emulate
