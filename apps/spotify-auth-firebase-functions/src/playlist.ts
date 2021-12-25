@@ -37,11 +37,10 @@ export const upsertPlaylist = async (
 }
 
 export const editPlaylist = async (
-  client,
+  client: SpotifyWebApi,
   playlistID: string,
   originalPlaylistID: string,
-  blocklistPlaylistID: string,
-  _ownerId: string
+  blocklistPlaylistID: string
 ) => {
   const [
     { body: blockplaylistTracks },
@@ -63,6 +62,9 @@ export const editPlaylist = async (
   const tracksToRemove = blockplaylistTracks.items.map((itm) => itm.track)
   await client.removeTracksFromPlaylist(playlistID, tracksToRemove)
 
+  const originalPlaylistTracksIDs: string[] = originalPlaylistTracks.items.map(
+    (itm) => itm.track.uri
+  )
   // add new tracks at the start of the playlist
   {
     tracksToRemove.forEach((track) => {
@@ -72,19 +74,21 @@ export const editPlaylist = async (
       if (idx !== -1) {
         playlistToEditTracks.items.splice(idx, 1)
       }
+      //
+      const idx2 = originalPlaylistTracksIDs.findIndex(
+        (itm) => itm === track.uri
+      )
+      if (idx2 !== -1) {
+        originalPlaylistTracksIDs.splice(idx2, 1)
+      }
     })
 
-    const tracksToAdd = originalPlaylistTracks.items.filter(
-      (t) =>
-        !playlistToEditTracks.items.find((itm) => itm.track.id === t.track.id)
+    const tracksToAdd = originalPlaylistTracksIDs.filter(
+      (uri) => !playlistToEditTracks.items.find((itm) => itm.track.uri === uri)
     )
 
     if (tracksToAdd.length) {
-      await client.addTracksToPlaylist(
-        playlistID,
-        tracksToAdd.map((itm) => itm.track.uri),
-        { position: 0 }
-      )
+      await client.addTracksToPlaylist(playlistID, tracksToAdd, { position: 0 })
     }
   }
 }
@@ -141,13 +145,7 @@ const cloneOrEditPlaylist = async (
   const client = await buildSpotifyClient(userId)
 
   const playlist = await upsertPlaylist(client, playlistID)
-  await editPlaylist(
-    client,
-    playlist.id,
-    playlistID,
-    blocklistPlaylistID,
-    userId
-  )
+  await editPlaylist(client, playlist.id, playlistID, blocklistPlaylistID)
 
   return playlist
 }
@@ -190,8 +188,7 @@ export const editPlaylistsByCron = functions.pubsub
                 client,
                 doc.playlistID,
                 doc.originalPlaylistID,
-                doc.blocklistID,
-                doc.ownerID
+                doc.blocklistID
               )
             )
         )
