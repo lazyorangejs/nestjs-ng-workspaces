@@ -111,8 +111,14 @@ export const buildSpotifyClient = async (uid: string) => {
       client.setAccessToken(doc.get('access_token'))
     }
 
-    await doc.ref.set({ ...tokenSet.body }, { merge: true })
+    const expires_at = new Date(Date.now() + tokenSet.body.expires_in * 1000)
+    functions.logger.info('updating tokenSet', { uid, expires_at })
+
+    await doc.ref.set({ expires_at, ...tokenSet.body }, { merge: true })
+  } else {
+    functions.logger.info('tokenSet is not found', { uid })
   }
+
   return client
 }
 
@@ -157,43 +163,60 @@ type PlaylistContext = {
   blocklistID: string
 }
 
-const savePlaylistContext = async ({
+export const savePlaylistContext = async ({
   playlistID,
   originalPlaylistID,
   ownerID,
   blocklistID,
 }: PlaylistContext) => {
   await playlistColl
-    .doc(ownerID + ':' + playlistID)
+    .doc(playlistID)
     .set(
       { ownerID, playlistID, originalPlaylistID, blocklistID },
       { merge: true }
     )
 }
 
+const listPlaylistContext = async (ownerID: string) => {
+  const resp = await playlistColl
+    .where('ownerID', '==', ownerID)
+    .limit(100)
+    .get()
+
+  const client = await buildSpotifyClient(ownerID)
+  if (resp.docs) {
+    await Promise.all(
+      resp.docs
+        .filter((doc) => doc.exists)
+        .map((doc) => doc.data() as PlaylistContext)
+        .map((doc) =>
+          editPlaylist(
+            client,
+            doc.playlistID,
+            doc.originalPlaylistID,
+            doc.blocklistID
+          )
+        )
+    )
+  }
+}
+
 export const editPlaylistsByCron = functions.pubsub
   .schedule('5 * * * *')
   .onRun(async () => {
-    const resp = await authApp.listUsers(100)
-    resp.users.forEach(async (user) => {
-      const resp = await playlistColl.where('ownerID', '==', user.uid).get()
-      const client = await buildSpotifyClient(user.uid)
-      if (resp.docs) {
-        await Promise.all(
-          resp.docs
-            .filter((doc) => doc.exists)
-            .map((doc) => doc.data() as PlaylistContext)
-            .map((doc) =>
-              editPlaylist(
-                client,
-                doc.playlistID,
-                doc.originalPlaylistID,
-                doc.blocklistID
-              )
-            )
-        )
-      }
-    })
+    let resp = await authApp.listUsers(100)
+    const butchSize = 10
+    while (resp.users.length) {
+      await Promise.allSettled(
+        resp.users
+          .splice(0, butchSize)
+          .filter((user) => !user.disabled)
+          .map((user) => listPlaylistContext(user.uid))
+      )
+    }
+    if (resp.pageToken) {
+      resp = await authApp.listUsers(100, resp.pageToken)
+    }
   })
 
 export const cloneOrEditPlaylistHttp = functions.https.onRequest(
