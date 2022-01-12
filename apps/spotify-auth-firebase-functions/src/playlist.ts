@@ -1,6 +1,9 @@
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 import * as functions from 'firebase-functions'
 import SpotifyWebApi from 'spotify-web-api-node'
+import { authenticateIdToken } from './authenticateIdToken'
+import { buildSpotifyClient } from './buildSpotifyClient'
+import { cloneOrEditPlaylist } from './cloneOrEditPlaylist'
 import { authApp, tokenSetColl, playlistColl } from './global'
 
 type PlaylistID = string
@@ -93,69 +96,6 @@ export const editPlaylist = async (
   }
 }
 
-export const buildSpotifyClient = async (uid: string) => {
-  const clientId = functions.config().spotify?.client_id
-  const clientSecret = functions.config().spotify?.client_secret
-  const redirectUri = functions.config().spotify?.redirect_uri
-
-  const doc = await tokenSetColl.doc(uid).get()
-
-  const client = new SpotifyWebApi({ clientId, clientSecret, redirectUri })
-
-  if (doc.exists) {
-    client.setAccessToken(doc.get('access_token'))
-    client.setRefreshToken(doc.get('refresh_token'))
-
-    const tokenSet = await client.refreshAccessToken()
-    if (tokenSet.statusCode === 200 && tokenSet.body.access_token) {
-      client.setAccessToken(doc.get('access_token'))
-    }
-
-    const expires_at = new Date(Date.now() + tokenSet.body.expires_in * 1000)
-    functions.logger.info('updating tokenSet', { uid, expires_at })
-
-    await doc.ref.set({ expires_at, ...tokenSet.body }, { merge: true })
-  } else {
-    functions.logger.info('tokenSet is not found', { uid })
-  }
-
-  return client
-}
-
-export const authenticateIdToken = async (
-  req: functions.https.Request,
-  res
-) => {
-  const token = req.get('Authorization')?.split(' ')?.pop()
-  try {
-    const decodedToken = await authApp.verifyIdToken(token, true)
-    return decodedToken
-  } catch (err) {
-    return null
-  }
-}
-
-/**
- * Clone an playlist by given playlist id or edit if user is beeing owner.
- * All tracks will be removed
- *
- * @param {string} userId An owner of Spotify account on behalf to edit playlist
- * @param {string} playlistID An ID of the playlist to edit if user is owner or clone the original playlist
- * @param {string} blocklistPlaylistID An ID of the blocklist playlist which contains all artist which must be blocked, their tracks will be removed from playlist.
- */
-const cloneOrEditPlaylist = async (
-  userId: string,
-  playlistID: string,
-  blocklistPlaylistID: string
-) => {
-  const client = await buildSpotifyClient(userId)
-
-  const playlist = await upsertPlaylist(client, playlistID)
-  await editPlaylist(client, playlist.id, playlistID, blocklistPlaylistID)
-
-  return playlist
-}
-
 type PlaylistContext = {
   playlistID: string
   originalPlaylistID: string
@@ -222,7 +162,6 @@ export const editPlaylistsByCron = functions.pubsub
 export const cloneOrEditPlaylistHttp = functions.https.onRequest(
   async (req, res) => {
     const authInfo = await authenticateIdToken(req, res)
-    functions.logger.debug('authInfo', authInfo)
 
     // https://open.spotify.com/playlist/0M4buVSktMgWQd34QH1dTG
     const blocklistPlaylistID = '0M4buVSktMgWQd34QH1dTG'

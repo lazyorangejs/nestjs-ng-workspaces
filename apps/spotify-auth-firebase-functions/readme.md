@@ -96,8 +96,8 @@ firebase functions:config:set spotify.redirect_uri="http://localhost:3000/spotif
 4. 
 
 ```bash
-gcloud functions add-iam-policy-binding helloWorld --member="allUsers" --role="roles/cloudfunctions.invoker"
 gcloud functions add-iam-policy-binding spotifyAuth --member="allUsers" --role="roles/cloudfunctions.invoker"
+gcloud functions add-iam-policy-binding spotifyCallback --member="allUsers" --role="roles/cloudfunctions.invoker"
  ```
 
 5. Get the function url and add callback url to Spotify application settings.
