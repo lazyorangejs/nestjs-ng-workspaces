@@ -40,3 +40,10 @@ testem.log
 Thumbs.db
 
 **/.env
+
+.runtimeconfig.json
+
+**/*-debug.log
+.firebase
+*.log
+**/firebase-admin-key.json

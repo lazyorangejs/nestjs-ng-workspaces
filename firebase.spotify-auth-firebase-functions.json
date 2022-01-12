@@ -1,0 +1,42 @@
+{
+  "firestore": {
+    "rules": "apps/spotify-auth-firebase-functions/firestore.rules",
+    "indexes": "apps/spotify-auth-firebase-functions/firestore.indexes.json"
+  },
+  "hosting": {
+    "public": "apps/spotify-auth-firebase-functions/public",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "storage": {
+    "rules": "apps/spotify-auth-firebase-functions/storage.rules"
+  },
+  "functions": {
+    "predeploy": [
+      "npx nx build spotify-auth-firebase-functions --with-deps"
+    ],
+    "source": "dist/apps/spotify-auth-firebase-functions"
+  },
+  "emulators": {
+    "functions": {
+      "port": 5001
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "hosting": {
+      "port": 5000
+    },
+    "auth": {
+      "port": "9099"
+    },
+    "pubsub": {
+      "port": "8085"
+    }
+  }
+}

@@ -4,8 +4,24 @@ image:
 # List the ports you want to expose and what to do when they are served. See https://www.gitpod.io/docs/config-ports/
 ports:
   - port: 3000
-    onOpen: open-preview
+    onOpen: ignore
     visibility: private
+  - port: 4000
+    onOpen: open-browser
+    visibility: private
+  - port: 5001
+    onOpen: ignore
+  - port: 9000
+    onOpen: ignore
+  - port: 9099
+    onOpen: ignore
+  - port: 5000
+    onOpen: ignore
+  - port: 8085
+    onOpen: ignore
+  - port: 5001
+    onOpen: ignore
+
 
 # List the start up tasks. You can start them in parallel in multiple terminals. See https://www.gitpod.io/docs/config-start-tasks/
 tasks:
@@ -15,7 +31,19 @@ tasks:
       cp apps/app/src/.env.example apps/app/.env
       npm install
 
-    command: node tools/configure-aws-profile.js && npm run dev
+      npm --version
+      node --version
+      npx firebase --version
+
+      npx firebase --token=$FIREBASE_TOKEN projects:list
+
+    before: npm install
+
+  - name: nx run spotify-auth-firebase-functions:emulate
+    command: npx nx run spotify-auth-firebase-functions:emulate
+
+  - name: nx run spotify-auth-firebase-functions:build
+    command: nx run spotify-auth-firebase-functions:build --watch
 
 vscode:
   extensions:

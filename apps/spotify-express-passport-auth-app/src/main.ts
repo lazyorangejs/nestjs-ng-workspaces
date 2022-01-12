@@ -3,7 +3,12 @@
  * This is only a minimal backend to get started.
  */
 import 'dotenv/config'
-import { app, port } from './app/app'
+import { createSpotifyAuthServer } from '@lazyorange/spotify-express-passport-auth'
+
+const { SPOTIFY_CLIENT_ID: clientID, SPOTIFY_CLIENT_SECRET: clientSecret } =
+  process.env
+
+const { app, port } = createSpotifyAuthServer(clientID, clientSecret)
 
 const server = app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}/api`)

@@ -5,12 +5,13 @@
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2015",
+    "target": "ES2021",
     "module": "commonjs",
-    "lib": ["es2017", "dom"],
+    "lib": ["es2017", "ES2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
@@ -18,6 +19,12 @@
       "@lazyorange/auth": ["libs/auth/src/index.ts"],
       "@lazyorange/domain": ["libs/domain/src/index.ts"],
       "@lazyorange/infrastructure": ["libs/infrastructure/src/index.ts"],
+      "@lazyorange/spotify-express-passport-auth": [
+        "libs/spotify-express-passport-auth-lib/src/index.ts"
+      ],
+      "@lazyorange/spotify-simple-oauth2-auth-lib": [
+        "libs/spotify-simple-oauth2-auth-lib/src/index.ts"
+      ],
       "@lazyorange/users-sequelize": ["libs/users-sequelize/src/index.ts"],
       "@lazyorange/users-typeorm": ["libs/users-typeorm/src/index.ts"]
     }

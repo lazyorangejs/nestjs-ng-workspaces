@@ -20,3 +20,13 @@ RUN wget https://github.com/gruntwork-io/cloud-nuke/releases/download/${CLOUD_NU
 ### https://github.com/jckuester/awsls#installation
 RUN brew install jckuester/tap/awsls
 
+RUN npm i -g firebase-tools
+
+RUN curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-324.0.0-linux-x86_64.tar.gz &&\
+    tar -xvzf google-cloud-sdk-324.0.0-linux-x86_64.tar.gz &&\
+    cd ./google-cloud-sdk/ && ./install.sh -q --quiet
+
+ENV PATH=~/google-cloud-sdk/bin:$PATH
+
+# please take a closer look at this doc https://firebase.google.com/docs/admin/setup?authuser=0 on how to gen app credentials
+ENV GOOGLE_APPLICATION_CREDENTIALS=./apps/spotify-auth-firebase-functions/firebase-admin-key.json
