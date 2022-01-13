@@ -20,3 +20,8 @@ RUN wget https://github.com/gruntwork-io/cloud-nuke/releases/download/${CLOUD_NU
 ### https://github.com/jckuester/awsls#installation
 RUN brew install jckuester/tap/awsls
 
+### Install AWS SAM cli from home brew repository
+### https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html
+RUN brew tap aws/tap && brew install aws-sam-cli
+
+RUN npm install serverless@2.71.0 -g
