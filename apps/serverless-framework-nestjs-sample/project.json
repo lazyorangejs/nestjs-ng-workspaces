@@ -1,0 +1,113 @@
+{
+  "root": "apps/serverless-framework-nestjs-sample",
+  "sourceRoot": "apps/serverless-framework-nestjs-sample/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/serverless-framework-nestjs-sample",
+        "main": "apps/serverless-framework-nestjs-sample/src/main.ts",
+        "tsConfig": "apps/serverless-framework-nestjs-sample/tsconfig.app.json",
+        "generatePackageJson": true,
+        "assets": [
+          "apps/serverless-framework-nestjs-sample/src/assets",
+          "apps/serverless-framework-nestjs-sample/src/serverless.yml"
+        ]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/serverless-framework-nestjs-sample/src/environments/environment.ts",
+              "with": "apps/serverless-framework-nestjs-sample/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "package": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "cwd": "dist/apps/serverless-framework-nestjs-sample",
+        "parallel": false,
+        "commands": [
+          {
+            "command": "npx nx run serverless-framework-nestjs-sample:build:production"
+          },
+          {
+            "command": "npx sls package"
+          }
+        ]
+      }
+    },
+    "deploy": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "cwd": "dist/apps/serverless-framework-nestjs-sample",
+        "parallel": false,
+        "commands": [
+          {
+            "command": "npx nx run serverless-framework-nestjs-sample:package"
+          },
+          {
+            "command": "npx sls deploy"
+          }
+        ]
+      },
+      "configurations": {
+        "testing": {
+          "commands": [
+            {
+              "command": "npx nx run serverless-framework-nestjs-sample:package"
+            },
+            {
+              "command": "npx sls deploy --stage testing"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:execute",
+      "options": {
+        "buildTarget": "serverless-framework-nestjs-sample:build"
+      }
+    },
+    "dev": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "cwd": "dist/apps/serverless-framework-nestjs-sample",
+        "parallel": true,
+        "commands": [
+          {
+            "command": "npx nx run serverless-framework-nestjs-sample:serve"
+          },
+          {
+            "command": "npx sls offline start"
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/serverless-framework-nestjs-sample/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/serverless-framework-nestjs-sample"],
+      "options": {
+        "jestConfig": "apps/serverless-framework-nestjs-sample/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": ["serverless", "nestjs", "aws", "lambda"]
+}

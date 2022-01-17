@@ -9,5 +9,11 @@
     "nx",
     "devx",
     "spotify-passport-auth-express"
+  ],
+  "json.schemas": [
+    {
+      "fileMatch": ["/serverless-framework-nestjs-sample.yml"],
+      "url": "https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/reference.json"
+    }
   ]
 }

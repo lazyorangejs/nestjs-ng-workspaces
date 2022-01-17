@@ -1,0 +1,43 @@
+service: serverless-nestjs
+frameworkVersion: '2'
+useDotenv: true
+
+configValidationMode: error
+
+plugins:
+- serverless-offline
+
+package:
+  individually: true
+
+provider:
+  lambdaHashingVersion: 20200924
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'eu-central-1'}
+  apiGateway:
+    shouldStartNameWithService: true
+  environment:
+    NODE_ENV: ${env:NODE_ENV}
+    GREETING_MESSAGE: ${ssm:/dev/GREETING_MESSAGE}
+
+functions:
+  app:
+    handler: main.handler
+    environment:
+      GREETING_MESSAGE: "Hello, world from serverless!"
+    events:
+      - http:
+          method: any
+          path: /{proxy+}
+      ###
+      ### https://docs.aws.amazon.com/lambda/latest/dg/services-cloudwatchevents-expressions.html
+      - schedule: rate(1 hour)
+      ### 12:00 AM (UTC) every day
+      - schedule: cron(0 12 * * ? *)
+      ### 6:00 PM Monday through Friday
+      - schedule: cron(0 18 ? * MON-FRI *)
+
+
+

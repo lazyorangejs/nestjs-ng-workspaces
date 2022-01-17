@@ -15,7 +15,7 @@ tasks:
       cp apps/app/src/.env.example apps/app/.env
       npm install
 
-    command: node tools/configure-aws-profile.js && npm run dev
+    # command: node tools/configure-aws-profile.js && npm run dev
 
 vscode:
   extensions:

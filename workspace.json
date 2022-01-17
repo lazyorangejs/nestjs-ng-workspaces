@@ -5,6 +5,7 @@
     "auth": "libs/auth",
     "domain": "libs/domain",
     "infrastructure": "libs/infrastructure",
+    "serverless-framework-nestjs-sample": "apps/serverless-framework-nestjs-sample",
     "spotify-express-passport-auth-app": {
       "root": "apps/spotify-express-passport-auth-app",
       "sourceRoot": "apps/spotify-express-passport-auth-app/src",

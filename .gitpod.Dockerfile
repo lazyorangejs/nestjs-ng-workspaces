@@ -25,3 +25,6 @@ RUN brew install jckuester/tap/awsls
 RUN brew tap aws/tap && brew install aws-sam-cli
 
 RUN npm install serverless@2.71.0 -g
+
+### Install cli for making http requests, alternative to curl.
+RUN brew install httpie
