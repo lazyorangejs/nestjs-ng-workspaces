@@ -16,6 +16,9 @@
     "baseUrl": ".",
     "paths": {
       "@lazyorange/auth": ["libs/auth/src/index.ts"],
+      "@lazyorange/aws-cloud9-terraform": [
+        "libs/aws-cloud9-terraform/src/index.ts"
+      ],
       "@lazyorange/domain": ["libs/domain/src/index.ts"],
       "@lazyorange/infrastructure": ["libs/infrastructure/src/index.ts"],
       "@lazyorange/users-sequelize": ["libs/users-sequelize/src/index.ts"],

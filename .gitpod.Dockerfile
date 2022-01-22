@@ -20,3 +20,5 @@ RUN wget https://github.com/gruntwork-io/cloud-nuke/releases/download/${CLOUD_NU
 ### https://github.com/jckuester/awsls#installation
 RUN brew install jckuester/tap/awsls
 
+### Install terraform cli 1.1.3 as of 01/18/2022
+RUN brew tap hashicorp/tap && brew install hashicorp/tap/terraform

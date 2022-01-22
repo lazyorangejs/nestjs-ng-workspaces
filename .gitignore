@@ -40,3 +40,7 @@ testem.log
 Thumbs.db
 
 **/.env
+
+**/.terraform
+**/*.lock.hcl
+**/*.tfstate.*
