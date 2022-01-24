@@ -43,4 +43,5 @@ Thumbs.db
 
 **/.terraform
 **/*.lock.hcl
+**/*.tfstate
 **/*.tfstate.*
