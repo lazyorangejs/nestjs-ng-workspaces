@@ -48,51 +48,28 @@ module "workstation-2" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "~> 3.0"
 
-  name        = module.labels.id
-  cpu_credits = "unlimited"
+  name = module.labels.id
+  tags = module.labels.tags
 
-  ami                    = "ami-0994cdfed5f3888d6"
-  instance_type          = "t2.micro"
-  key_name               = "development"
-  monitoring             = true
+
+  ami           = "ami-03aaf730676832ac6"
+  instance_type = "t3.large"
+  cpu_credits   = "unlimited"
+  key_name      = "development"
+  monitoring    = true
+
   vpc_security_group_ids = ["sg-2faab34d"]
   subnet_id              = "subnet-fd6b7780"
 
   associate_public_ip_address = true
   iam_instance_profile        = module.iam_assumable_role_workstation.iam_instance_profile_name
 
-  # https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-agent-status-and-restart.html
-  user_data = <<EOF
-#!/bin/bash
-sudo snap install amazon-ssm-agent --classic
-sudo snap install aws-cli --classic
-EOF
+  # you don't need to install SSM agent until you use own ami
+  #   # https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-agent-status-and-restart.html
+  #   user_data = <<EOF
+  # #!/bin/bash
+  # sudo snap install amazon-ssm-agent --classic
+  # sudo snap install aws-cli --classic
+  # EOF
 
-  tags = module.labels.tags
 }
-
-# module "workstation" {
-#   source  = "cloudposse/ec2-instance/aws"
-#   version = "0.40.0"
-
-#   assign_eip_address          = true
-#   associate_public_ip_address = true
-
-#   ssh_key_pair  = "development"
-#   instance_type = "t2.micro"
-#   vpc_id        = "vpc-aa7a84c0"
-#   subnet        = "subnet-fd6b7780"
-
-#   # security_groups             = var.security_groups
-#   instance_profile = module.iam_assumable_role_workstation.iam_instance_profile_name
-
-#   name      = "vymarkov"
-#   namespace = "eg"
-#   stage     = "dev"
-
-#   # https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-agent-status-and-restart.html
-#   user_data = <<EOF
-# #!/bin/bash
-# sudo snap install amazon-ssm-agent --classic"
-# EOF
-# }

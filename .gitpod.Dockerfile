@@ -22,3 +22,4 @@ RUN brew install jckuester/tap/awsls
 
 ### Install terraform cli 1.1.3 as of 01/18/2022
 RUN brew tap hashicorp/tap && brew install hashicorp/tap/terraform
+RUN brew install hashicorp/tap/packer
