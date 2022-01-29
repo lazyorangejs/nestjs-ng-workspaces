@@ -16,7 +16,7 @@ variable skaffold_version {
 }
 
 source "amazon-ebs" "ubuntu" {
-  ami_name      = "aws-vscode-workstation-linux-aws"
+  ami_name      = "aws-vscode-workstation-linux-aws-0.0.1-rc.2"
   instance_type = "t2.micro"
   region        = "eu-central-1"
 
@@ -56,7 +56,9 @@ build {
 
       "curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v{var.skaffold_version}/skaffold-linux-amd64 && chmod +x skaffold && sudo mv skaffold /usr/local/bin",
 
-      "sudo snap install docker"
+      "sudo snap install docker",
+      "sleep 30",
+      "sudo chmod 666 /var/run/docker.sock"
     ]
   }
 
