@@ -14,6 +14,23 @@ module "labels" {
   }
 }
 
+module "vscode_workstation_sg" {
+  source = "terraform-aws-modules/security-group/aws"
+  version = "4.8.0"
+
+  name        = "${module.labels.id}-sg"
+  tags = module.labels.tags
+
+  description = "Security group for user-service with custom ports open within VPC"
+  vpc_id      = var.vpc_id
+
+  # ingress_cidr_blocks = [""]
+  egress_rules = ["all-all"]
+
+  ingress_cidr_blocks = ["${var.workstation_ip}/32"]
+  ingress_rules = ["ssh-tcp"]
+}
+
 // https://github.com/terraform-aws-modules/terraform-aws-iam/tree/master/modules/iam-assumable-role
 // https://github.com/terraform-aws-modules/terraform-aws-iam/tree/master/examples/iam-assumable-role
 module "iam_assumable_role_workstation" {
@@ -23,12 +40,6 @@ module "iam_assumable_role_workstation" {
   trusted_role_services = [
     "ec2.amazonaws.com"
   ]
-
-  # trusted_role_arns = [
-  #   "arn:aws:iam::912888207281:user/gitpod"
-  # ]
-
-  # arn:aws:iam::912888207281:user/gitpod
 
   create_role             = true
   create_instance_profile = true
@@ -51,15 +62,15 @@ module "workstation-2" {
   name = module.labels.id
   tags = module.labels.tags
 
-
-  ami           = "ami-03aaf730676832ac6"
-  instance_type = "t3.large"
+  ami           = var.ami
+  instance_type = var.ec2_instance_type # "t3.large"
   cpu_credits   = "unlimited"
-  key_name      = "development"
   monitoring    = true
 
-  vpc_security_group_ids = ["sg-2faab34d"]
-  subnet_id              = "subnet-fd6b7780"
+  key_name      = var.ssh_key_name
+
+  vpc_security_group_ids = [module.vscode_workstation_sg.security_group_id]
+  subnet_id              = var.subnet_id
 
   associate_public_ip_address = true
   iam_instance_profile        = module.iam_assumable_role_workstation.iam_instance_profile_name

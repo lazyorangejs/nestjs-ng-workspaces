@@ -7,18 +7,10 @@ packer {
   }
 }
 
-variable terraform_version {
-  default = "1.1.4"
-}
-
-variable skaffold_version {
-  default = "1.35.2"
-}
-
 source "amazon-ebs" "ubuntu" {
-  ami_name      = "aws-vscode-workstation-linux-aws-0.0.1-rc.2"
+  ami_name      = "aws-vscode-workstation-linux-aws-0.0.1-rc.5"
   instance_type = "t2.micro"
-  region        = "eu-central-1"
+  region        = var.region
 
   source_ami_filter {
     filters = {
@@ -35,9 +27,29 @@ source "amazon-ebs" "ubuntu" {
 
 build {
   name = "aws-vscode-workstation"
+
   sources = [
     "source.amazon-ebs.ubuntu"
   ]
+
+  provisioner "file" {
+    content = <<EOF
+terraform ${var.terraform_version}
+vault 1.9.3
+
+kubectl 1.23.3
+skaffold ${var.skaffold_version}
+
+awscli 2.4.15
+aws-vault 6.4.0
+EOF
+    destination = "~/.tool-versions"
+  }
+
+  provisioner "file" {
+    source = "./install_asdf_plugins.sh"
+    destination = "/home/ubuntu/install_asdf_plugins.sh"
+  }
 
   provisioner "shell" {
     environment_vars = [
@@ -46,19 +58,27 @@ build {
 
     inline = [
       "sudo apt-get update && sudo apt-get install -qy wget unzip curl git procps",
+      "sudo apt-get install -qy linux-headers-$(uname -r) build-essential",
       "sudo snap install amazon-ssm-agent --classic",
-      "sudo snap install aws-cli --classic",
       "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash",
-      //
-      "wget https://releases.hashicorp.com/terraform/${var.terraform_version}/terraform_${var.terraform_version}_linux_amd64.zip",
-      "unzip terraform_${var.terraform_version}_linux_amd64.zip",
-      "sudo mv ./terraform /usr/local/bin/",
-
-      "curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v{var.skaffold_version}/skaffold-linux-amd64 && chmod +x skaffold && sudo mv skaffold /usr/local/bin",
 
       "sudo snap install docker",
       "sleep 30",
-      "sudo chmod 666 /var/run/docker.sock"
+      "sudo chmod 666 /var/run/docker.sock",
+
+      # install zsh
+      "sudo apt-get install -yq zsh",
+
+      "git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh",
+      "cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc",
+      # "sudo chsh -s $(which zsh)",
+
+      "git clone https://github.com/zsh-users/antigen.git ~/antigen",
+      "echo \"source ~/antigen/antigen.zsh\" >> ~/.zshrc",
+
+      "sudo apt-get install postgresql-client -yq",
+
+      "zsh ./install_asdf_plugins.sh"
     ]
   }
 
