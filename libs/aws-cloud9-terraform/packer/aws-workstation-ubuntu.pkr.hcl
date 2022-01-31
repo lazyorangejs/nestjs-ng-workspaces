@@ -65,6 +65,7 @@ EOF
       "sudo snap install docker",
       "sleep 30",
       "sudo chmod 666 /var/run/docker.sock",
+     
 
       # install zsh
       "sudo apt-get install -yq zsh",
@@ -77,8 +78,10 @@ EOF
       "echo \"source ~/antigen/antigen.zsh\" >> ~/.zshrc",
       
       "echo \"\nsource ~/.nvm/nvm.sh\n\" >> ~/.zshrc",
+      "echo \"export AWS_VAULT_BACKEND="file"\" >> ~/.zshrc",
 
       "sudo apt-get install postgresql-client -yq",
+      
 
       "zsh ./install_asdf_plugins.sh"
     ]
