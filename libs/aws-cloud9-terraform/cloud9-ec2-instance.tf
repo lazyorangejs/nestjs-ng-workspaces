@@ -15,10 +15,10 @@ module "labels" {
 }
 
 module "vscode_workstation_sg" {
-  source = "terraform-aws-modules/security-group/aws"
+  source  = "terraform-aws-modules/security-group/aws"
   version = "4.8.0"
 
-  name        = "${module.labels.id}-sg"
+  name = "${module.labels.id}-sg"
   tags = module.labels.tags
 
   description = "Security group for user-service with custom ports open within VPC"
@@ -28,7 +28,7 @@ module "vscode_workstation_sg" {
   egress_rules = ["all-all"]
 
   ingress_cidr_blocks = ["${var.workstation_ip}/32"]
-  ingress_rules = ["ssh-tcp"]
+  ingress_rules       = ["ssh-tcp"]
 }
 
 // https://github.com/terraform-aws-modules/terraform-aws-iam/tree/master/modules/iam-assumable-role
@@ -67,7 +67,7 @@ module "workstation-2" {
   cpu_credits   = "unlimited"
   monitoring    = true
 
-  key_name      = var.ssh_key_name
+  key_name = var.ssh_key_name
 
   vpc_security_group_ids = [module.vscode_workstation_sg.security_group_id]
   subnet_id              = var.subnet_id

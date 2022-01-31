@@ -9,7 +9,7 @@ terraform {
 
 # Configure the AWS Provider
 provider "aws" {
-  region = "eu-central-1"
+  region = var.region
 }
 
 # You cannot create a new backend by simply defining this and then
