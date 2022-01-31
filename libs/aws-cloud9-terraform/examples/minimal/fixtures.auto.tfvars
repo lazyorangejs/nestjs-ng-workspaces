@@ -1,0 +1,6 @@
+ami            = "ami-049164e77a2c5b5f9"
+vpc_id         = "vpc-2a1b2541"
+subnet_id      = "subnet-d99aba94"
+workstation_ip = "62.216.35.230"
+ssh_key_name   = "development"
+region         = "eu-central-1"

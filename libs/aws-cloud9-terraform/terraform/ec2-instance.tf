@@ -55,7 +55,7 @@ module "iam_assumable_role_workstation" {
 }
 
 // https://github.com/terraform-aws-modules/terraform-aws-ec2-instance
-module "workstation-2" {
+module "vscode_workstation_ec2" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "~> 3.0"
 
