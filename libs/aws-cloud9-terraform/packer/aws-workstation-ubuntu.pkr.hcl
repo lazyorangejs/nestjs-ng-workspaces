@@ -75,6 +75,8 @@ EOF
 
       "git clone https://github.com/zsh-users/antigen.git ~/antigen",
       "echo \"source ~/antigen/antigen.zsh\" >> ~/.zshrc",
+      
+      "echo \"\nsource ~/.nvm/nvm.sh\n\" >> ~/.zshrc",
 
       "sudo apt-get install postgresql-client -yq",
 
