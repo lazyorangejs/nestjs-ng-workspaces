@@ -27,4 +27,10 @@ asdf plugin add awscli
 asdf plugin-add aws-vault https://github.com/virtualstaticvoid/asdf-aws-vault.git
 #
 asdf plugin add redis-cli https://github.com/NeoHsu/asdf-redis-cli.git
+asdf plugin add sonarscanner https://github.com/virtualstaticvoid/asdf-sonarscanner.git
 
+asdf plugin add jq
+asdf plugin add ruby
+asdf plugin add nodejs
+
+asdf install

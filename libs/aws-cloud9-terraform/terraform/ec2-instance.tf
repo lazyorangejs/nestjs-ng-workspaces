@@ -51,6 +51,7 @@ module "iam_assumable_role_workstation" {
     "arn:aws:iam::aws:policy/AmazonSSMFullAccess",
     "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
   ]
+
   number_of_custom_role_policy_arns = 2
 }
 
@@ -82,5 +83,14 @@ module "vscode_workstation_ec2" {
   # sudo snap install amazon-ssm-agent --classic
   # sudo snap install aws-cli --classic
   # EOF
+
+   root_block_device = [
+    {
+      encrypted   = false
+      volume_type = "gp3"
+      throughput  = 200
+      volume_size = 60
+    },
+  ]
 
 }

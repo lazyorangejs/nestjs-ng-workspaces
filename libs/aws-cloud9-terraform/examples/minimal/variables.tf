@@ -1,6 +1,6 @@
 variable "ami" {
   type    = string
-  default = "ami-049164e77a2c5b5f9"
+  default = "ami-0eaa6183e540e9b04"
 }
 
 variable "ec2_instance_type" {
