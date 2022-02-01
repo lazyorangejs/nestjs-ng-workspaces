@@ -3,6 +3,21 @@
   "projects": {
     "app": "apps/app",
     "auth": "libs/auth",
+    "aws-cloud9-terraform": {
+      "root": "libs/aws-cloud9-terraform",
+      "sourceRoot": "libs/aws-cloud9-terraform/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/aws-cloud9-terraform/**/*.ts"]
+          }
+        }
+      },
+      "tags": []
+    },
     "domain": "libs/domain",
     "infrastructure": "libs/infrastructure",
     "spotify-express-passport-auth-app": {
