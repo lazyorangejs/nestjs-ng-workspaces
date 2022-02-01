@@ -8,7 +8,7 @@ packer {
 }
 
 source "amazon-ebs" "ubuntu" {
-  ami_name      = "aws-vscode-workstation-linux-aws-0.0.1-rc.6"
+  ami_name      = "aws-vscode-workstation-linux-aws-0.0.1-rc.7"
   instance_type = "t2.micro"
   region        = var.region
 
@@ -69,6 +69,8 @@ EOF
     ]
 
     inline = [
+      "echo 'Sleeping for 30 seconds to give Ubuntu enough time to initialize (otherwise, packages may fail to install).'",
+      "sleep 30",
       "./install_tools.sh",
       "./install_asdf_plugins.sh"
     ]
